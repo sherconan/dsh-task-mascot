@@ -1,0 +1,51 @@
+name: 角色包投稿 / Character pack submission
+description: 分享一个你做的角色包 / Share a character pack you made
+title: "[角色包] "
+labels: ["character-pack"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: 角色名 / Character name
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: 素材链接 / Pack link
+      description: 仓库、网盘或 PR 链接 / Repo, download or PR link
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: 授权协议 / License
+      placeholder: "CC BY 4.0 / CC BY-NC-SA 4.0 / ..."
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 来源说明 / Source & attribution
+      description: 原创还是二创？二创请写清来源链和上游协议 / Original or derivative? For derivatives list the source chain and upstream license.
+    validations:
+      required: true
+  - type: textarea
+    id: states
+    attributes:
+      label: 包含的状态 / States included
+      placeholder: "thinking, reading, cmd, waiting, done, error ..."
+  - type: textarea
+    id: preview
+    attributes:
+      label: 预览 / Preview
+      description: 贴几张截图或 GIF / Screenshots or GIFs
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认 / Confirm
+      options:
+        - label: 这是我的原创作品，或我已获得作者授权 / This is my original work, or I have the author's permission
+          required: true
+        - label: 授权协议与上游兼容，并允许本项目展示 / The license is compatible with upstream and allows this project to showcase it
+          required: true

@@ -105,7 +105,7 @@ First match wins (`tool`/`ext` are regexes; `ext` = target file extension). Edit
 
 3. 可用状态：`idle thinking reading search coding editing writingdoc cmd data planning subagents tools summary waiting done error`。
 4. 编码：把带透明通道的母版放到 `masters/<pack>/`，运行 `npm run encode`（`scripts/encode-packs.sh`：384px 30fps VP9 yuva420p；WebP 256px 15fps）。
-5. 重启 dsh，在设置里选择新角色。欢迎 PR 分享你的角色包（请写清授权）。
+5. 重启 dsh，在设置里选择新角色。完整教程见 [docs/make-a-pack.md](docs/make-a-pack.md)。欢迎 PR 分享你的角色包（请写清授权）。
 
 ## 隐私
 
