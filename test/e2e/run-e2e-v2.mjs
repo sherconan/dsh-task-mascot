@@ -25,6 +25,7 @@ await p.goto(url); await p.waitForTimeout(5000);
 await p.getByText('New Session').first().click().catch(() => {}); await p.waitForTimeout(1000);
 if (await p.getByText('Choose workspace').count()) { await p.getByText('Choose workspace').click(); await p.waitForTimeout(800); await p.getByText('mascot-demo-ws', { exact: true }).click(); await p.waitForTimeout(600); await p.getByRole('button', { name: 'Open' }).click(); await p.waitForTimeout(1500); }
 await p.screenshot({ path: Q + '/00-before.png' });
+for (let i = 0; i < 3 && await p.locator('[role=dialog][aria-label="Get started"]').count(); i++) { await p.keyboard.press('Escape'); await p.waitForTimeout(500); }
 await p.locator('[data-composer-input="true"]').click(); await p.keyboard.type(process.env.PROMPT || 'Please tour the tools'); await p.keyboard.press('Enter');
 const shots = new Set(); let approvals = []; let n = 0; const t0 = Date.now(); let doneAt = 0;
 while (Date.now() - t0 < +(process.env.MAXMS || 150000)) {

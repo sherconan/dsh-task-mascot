@@ -24,11 +24,13 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot
 | 显示内容 | 一个动画 | 动作 + **工具参数**（"正在改 src/app.js"、"运行 npm test"、"正在搜索 \"function\""） |
 | 步骤感 | 无 | **第 N 步**、本步耗时、总耗时、迷你时间线 |
 | 聊天里 | 无 | 对话流里的**内联步骤卡片**，每步 ✓ 成功 / ✗ 失败，本轮结束有总结 + 回放 |
-| 状态粒度 | 2–3 种 | 读文件 / 写代码 / 改代码 / 写文档 / 搜索 / 跑命令 / 做计划 / 派子代理 / 等你确认 / 完成 / 出错 … |
+| 状态粒度 | 2–3 种 | 读文件 / 写代码 / 新建 / 改代码 / 对比 / 搜索 / 上网 / 跑命令（git·测试·装依赖·下载·删除）/ MCP / 做计划 / 派子代理 / 等你确认 / 完成 / 出错 … 共 37 种（v2） |
+| 看懂循环 | 无 | **第 N 轮**、重试、连续失败会着急、连发工具会手忙脚乱、子任务完成、被拒绝 / 被中断（v2） |
+| 时长 | 无 | 一步超过 20 s 冒汗、60 s 犯困，长任务结束欢呼，阈值可调（v2） |
 | 审批 | 会挡住按钮 | 显示"等你确认"，并**自动避让**审批按钮和输入框 |
 | 角色 | 固定 | **可替换角色包**（自带 大肥鱼、Claude娘），丢个文件夹就能加 |
 | 映射 | 写死 | 设置里可编辑 **工具 → 动画** 映射规则（正则） |
-| 体积 | — | 两个角色包合计约 13 MB（VP9 透明 webm + Safari 用 WebP 兜底） |
+| 体积 | — | 两个角色包合计约 18 MB（VP9 透明 webm + Safari 用 WebP 兜底） |
 
 其他细节：每步至少停留 600 ms 排队播放不丢步；流式参数只显示已闭合的值不闪烁；三种展示面（内联卡片 / 输入框上方 Dock 条 / 悬浮宠物）可任意组合；宠物可拖动、双击归位；可选提示音（默认关）。
 
@@ -36,6 +38,8 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot
 ![approval](docs/screenshot-approval.png)
 
 ## 工具 → 动画映射 / Tool → state mapping
+
+> v2 新增的状态、bash 命令细分、轮次/重试/时长规则见 [docs/states-v2.md](docs/states-v2.md)。
 
 按顺序匹配，第一条命中生效（`tool`、`ext` 均为正则，`ext` 匹配目标文件扩展名）。在设置里可以编辑 JSON 覆盖。
 First match wins (`tool`/`ext` are regexes; `ext` = target file extension). Editable in Settings.

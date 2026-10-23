@@ -77,6 +77,162 @@
       "poster": "error.png",
       "loop": false,
       "durationMs": 3000
+    },
+    "web": {
+      "webm": "web.webm",
+      "webp": "web.webp",
+      "poster": "web.png",
+      "loop": true
+    },
+    "download": {
+      "webm": "download.webm",
+      "webp": "download.webp",
+      "poster": "download.png",
+      "loop": true
+    },
+    "git": {
+      "webm": "git.webm",
+      "webp": "git.webp",
+      "poster": "git.png",
+      "loop": true
+    },
+    "test": {
+      "webm": "test.webm",
+      "webp": "test.webp",
+      "poster": "test.png",
+      "loop": true
+    },
+    "install": {
+      "webm": "install.webm",
+      "webp": "install.webp",
+      "poster": "install.png",
+      "loop": true
+    },
+    "create": {
+      "webm": "create.webm",
+      "webp": "create.webp",
+      "poster": "create.png",
+      "loop": true
+    },
+    "delete": {
+      "webm": "delete.webm",
+      "webp": "delete.webp",
+      "poster": "delete.png",
+      "loop": true
+    },
+    "mcp": {
+      "webm": "mcp.webm",
+      "webp": "mcp.webp",
+      "poster": "mcp.png",
+      "loop": true
+    },
+    "memory": {
+      "webm": "memory.webm",
+      "webp": "memory.webp",
+      "poster": "memory.png",
+      "loop": true
+    },
+    "media": {
+      "webm": "media.webm",
+      "webp": "media.webp",
+      "poster": "media.png",
+      "loop": true
+    },
+    "diff": {
+      "webm": "diff.webm",
+      "webp": "diff.webp",
+      "poster": "diff.png",
+      "loop": true
+    },
+    "retry": {
+      "webm": "retry.webm",
+      "webp": "retry.webp",
+      "poster": "retry.png",
+      "loop": true
+    },
+    "worried": {
+      "webm": "worried.webm",
+      "webp": "worried.webp",
+      "poster": "worried.png",
+      "loop": true
+    },
+    "busy": {
+      "webm": "busy.webm",
+      "webp": "busy.webp",
+      "poster": "busy.png",
+      "loop": true
+    },
+    "subtask": {
+      "webm": "subtask.webm",
+      "webp": "subtask.webp",
+      "poster": "subtask.png",
+      "loop": true
+    },
+    "denied": {
+      "webm": "denied.webm",
+      "webp": "denied.webp",
+      "poster": "denied.png",
+      "loop": true
+    },
+    "interrupted": {
+      "webm": "interrupted.webm",
+      "webp": "interrupted.webp",
+      "poster": "interrupted.png",
+      "loop": true
+    },
+    "sweat": {
+      "webm": "sweat.webm",
+      "webp": "sweat.webp",
+      "poster": "sweat.png",
+      "loop": true
+    },
+    "tired": {
+      "webm": "tired.webm",
+      "webp": "tired.webp",
+      "poster": "tired.png",
+      "loop": true
+    },
+    "cheer": {
+      "webm": "cheer.webm",
+      "webp": "cheer.webp",
+      "poster": "cheer.png",
+      "loop": true
+    },
+    "coding_b": {
+      "webm": "coding_b.webm",
+      "webp": "coding_b.webp",
+      "poster": "coding_b.png",
+      "loop": true
+    },
+    "reading_b": {
+      "webm": "reading_b.webm",
+      "webp": "reading_b.webp",
+      "poster": "reading_b.png",
+      "loop": true
+    },
+    "cmd_b": {
+      "webm": "cmd_b.webm",
+      "webp": "cmd_b.webp",
+      "poster": "cmd_b.png",
+      "loop": true
+    },
+    "search_b": {
+      "webm": "search_b.webm",
+      "webp": "search_b.webp",
+      "poster": "search_b.png",
+      "loop": true
+    },
+    "thinking_b": {
+      "webm": "thinking_b.webm",
+      "webp": "thinking_b.webp",
+      "poster": "thinking_b.png",
+      "loop": true
+    },
+    "editing_b": {
+      "webm": "editing_b.webm",
+      "webp": "editing_b.webp",
+      "poster": "editing_b.png",
+      "loop": true
     }
   },
   "fallback": {
@@ -101,6 +257,33 @@
     ],
     "*": [
       "thinking"
+    ]
+  },
+  "version": 2,
+  "variants": {
+    "coding": [
+      "coding",
+      "coding_b"
+    ],
+    "reading": [
+      "reading",
+      "reading_b"
+    ],
+    "cmd": [
+      "cmd",
+      "cmd_b"
+    ],
+    "search": [
+      "search",
+      "search_b"
+    ],
+    "thinking": [
+      "thinking",
+      "thinking_b"
+    ],
+    "editing": [
+      "editing",
+      "editing_b"
     ]
   }
 }

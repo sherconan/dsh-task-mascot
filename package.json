@@ -1,6 +1,6 @@
 {
   "name": "dsh-task-mascot",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "metsh · Task Mascot — 真跟着 Agent 每一步工具调用在动。A DeepSeek Harness Web plugin whose mascot acts out every live tool call (read / write / edit / search / run / plan / sub-agent / wait / error) with step cards in chat. Swappable character packs (大肥鱼, Claude娘).",
   "type": "module",
   "main": "lib/index.js",
