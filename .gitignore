@@ -1,0 +1,9 @@
+node_modules/
+qa/
+masters/
+*.log
+*.jsonl
+.env
+.env.*
+.DS_Store
+test/e2e/package-lock.json

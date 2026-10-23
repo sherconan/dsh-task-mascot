@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "id": "dafeiyu",
+  "title": "大肥鱼 (Whale Girl, fan art)",
+  "author": "metsh (animation); character design after TreapGoGo/deepseek-whale-girl",
+  "license": "Character design from TreapGoGo/deepseek-whale-girl (MIT). Unofficial fan art, not affiliated with DeepSeek. See ART_LICENSE.md.",
+  "preview": "thinking.png",
+  "size": {
+    "width": 384,
+    "height": 384
+  },
+  "states": {
+    "reading": {
+      "webm": "reading.webm",
+      "webp": "reading.webp",
+      "poster": "reading.png",
+      "loop": true
+    },
+    "coding": {
+      "webm": "coding.webm",
+      "webp": "coding.webp",
+      "poster": "coding.png",
+      "loop": true
+    },
+    "editing": {
+      "webm": "editing.webm",
+      "webp": "editing.webp",
+      "poster": "editing.png",
+      "loop": true
+    },
+    "cmd": {
+      "webm": "cmd.webm",
+      "webp": "cmd.webp",
+      "poster": "cmd.png",
+      "loop": true
+    },
+    "search": {
+      "webm": "search.webm",
+      "webp": "search.webp",
+      "poster": "search.png",
+      "loop": true
+    },
+    "thinking": {
+      "webm": "thinking.webm",
+      "webp": "thinking.webp",
+      "poster": "thinking.png",
+      "loop": true
+    },
+    "planning": {
+      "webm": "planning.webm",
+      "webp": "planning.webp",
+      "poster": "planning.png",
+      "loop": true
+    },
+    "waiting": {
+      "webm": "waiting.webm",
+      "webp": "waiting.webp",
+      "poster": "waiting.png",
+      "loop": true
+    },
+    "subagents": {
+      "webm": "subagents.webm",
+      "webp": "subagents.webp",
+      "poster": "subagents.png",
+      "loop": true
+    },
+    "done": {
+      "webm": "done.webm",
+      "webp": "done.webp",
+      "poster": "done.png",
+      "loop": false,
+      "durationMs": 3000
+    },
+    "error": {
+      "webm": "error.webm",
+      "webp": "error.webp",
+      "poster": "error.png",
+      "loop": false,
+      "durationMs": 3000
+    }
+  },
+  "fallback": {
+    "data": [
+      "reading"
+    ],
+    "tools": [
+      "cmd"
+    ],
+    "writingdoc": [
+      "editing"
+    ],
+    "summary": [
+      "thinking"
+    ],
+    "idle": [
+      "waiting",
+      "thinking"
+    ],
+    "generating": [
+      "thinking"
+    ],
+    "*": [
+      "thinking"
+    ]
+  }
+}

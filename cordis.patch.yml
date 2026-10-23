@@ -1,0 +1,5 @@
+# dsh-task-mascot bundle patch: host half (asset + SSE activity routes); the browser half
+# is declared through package.json "dsh.client" and mounts into shell.overlay / settings.section.
+- insert:
+    - id: dsh-task-mascot
+      name: dsh-task-mascot

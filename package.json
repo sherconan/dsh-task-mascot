@@ -1,0 +1,69 @@
+{
+  "name": "dsh-task-mascot",
+  "version": "1.0.0",
+  "description": "metsh · Task Mascot — 真跟着 Agent 每一步工具调用在动。A DeepSeek Harness Web plugin whose mascot acts out every live tool call (read / write / edit / search / run / plan / sub-agent / wait / error) with step cards in chat. Swappable character packs (大肥鱼, Claude娘).",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets/packs",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md",
+    "ART_LICENSE.md"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.0-rc.2"
+  },
+  "scripts": {
+    "test": "node --test test/unit.test.mjs",
+    "check": "node --check lib/index.js && node --check lib/client.js",
+    "encode": "bash scripts/encode-packs.sh"
+  },
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "mascot",
+    "desktop-pet",
+    "agent",
+    "tool-calls",
+    "animation",
+    "大肥鱼",
+    "whale-girl",
+    "claude娘"
+  ],
+  "author": "metsh",
+  "displayName": "metsh · Task Mascot",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sherconan/dsh-task-mascot.git"
+  },
+  "homepage": "https://github.com/sherconan/dsh-task-mascot#readme",
+  "bugs": {
+    "url": "https://github.com/sherconan/dsh-task-mascot/issues"
+  }
+}

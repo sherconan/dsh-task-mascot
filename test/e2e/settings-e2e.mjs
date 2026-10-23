@@ -1,0 +1,31 @@
+// Opens Settings → Task Mascot, changes size, checks persistence; then a Safari-UA page uses the WebP fallback.
+import { chromium } from 'playwright-core';
+import { readFileSync } from 'node:fs';
+const QA = (process.env.QDIR || new URL('../../qa', import.meta.url).pathname);
+const url = readFileSync(QA + '/dsh-web.log', 'utf8').match(/http:\S+token=\S+/)[0];
+const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome' });
+const p = await b.newPage({ viewport: { width: 1280, height: 800 } });
+await p.goto(url); await p.waitForTimeout(5000);
+await p.getByRole('button', { name: 'Continue' }).click().catch(() => {});
+await p.getByText('More').click(); await p.waitForTimeout(600);
+await p.getByText(/^Settings$/).first().click(); await p.waitForTimeout(1200);
+await p.getByText('任务角色 Mascot').first().click(); await p.waitForTimeout(1200);
+console.log('settings section:', await p.locator('[data-mascot-settings]').count());
+await p.screenshot({ path: QA + '/settings-panel.png' });
+await p.locator('[data-mascot-settings] input[type=range]').first().fill('240'); await p.waitForTimeout(800);
+console.log('mascot width after size=240:', await p.evaluate(() => document.getElementById('dsh-task-mascot')?.style.width));
+await p.locator('[data-mascot-settings] details summary').click(); await p.waitForTimeout(400);
+await p.screenshot({ path: QA + '/settings-mapping.png', fullPage: true });
+await p.reload(); await p.waitForTimeout(5000);
+console.log('persisted width:', await p.evaluate(() => document.getElementById('dsh-task-mascot')?.style.width));
+// drag
+const m = p.locator('#dsh-task-mascot'); const bb = await m.boundingBox();
+await p.mouse.move(bb.x + 50, bb.y + 50); await p.mouse.down(); await p.mouse.move(300, 200, { steps: 8 }); await p.mouse.up();
+console.log('after drag:', await m.boundingBox());
+await p.screenshot({ path: QA + '/dragged.png' });
+await p.evaluate(() => localStorage.removeItem('dsh-task-mascot:settings:v1'));
+const s = await b.newPage({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', viewport: { width: 1280, height: 800 } });
+await s.goto(url); await s.waitForTimeout(5000);
+console.log('safari fallback media:', await s.evaluate(() => { const r = document.getElementById('dsh-task-mascot'); return r && [...r.querySelectorAll('img,video')].map((e) => e.tagName + ':' + (e.currentSrc || e.src).split('%2F').pop()).join(','); }));
+await s.screenshot({ path: QA + '/safari-webp-fallback.png' });
+await b.close();
