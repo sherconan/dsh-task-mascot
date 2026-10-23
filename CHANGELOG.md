@@ -1,6 +1,10 @@
 # Changelog
 
-## 2.0.0（未发布）
+## 2.0.1
+
+- 清理构建脚本里的本地路径默认值。
+
+## 2.0.0
 
 - 大肥鱼 v2 角色包：新增 26 个状态（create/diff/git/test/install/download/delete/web/mcp/memory/media/subtask/busy/retry/worried/denied/interrupted/sweat/tired/cheer 及 6 个 `_b` 变体），共 37 个，约 12 MB。
 - bash/pwsh 按命令细分：git / test / install / download / delete / diff；`write` 新文件识别为 create。
