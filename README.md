@@ -126,7 +126,9 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 ## 授权
 
 - 代码：MIT © metsh（[LICENSE](LICENSE)）
-- 角色素材：见 [ART_LICENSE.md](ART_LICENSE.md)。大肥鱼形象参考社区资源库 [TreapGoGo/deepseek-whale-girl](https://github.com/TreapGoGo/deepseek-whale-girl)；Claude娘为 metsh 原创同人角色。
+- 角色素材：见 [ART_LICENSE.md](ART_LICENSE.md)。
+  - 大肥鱼动画：**CC BY-NC-SA 4.0**（非商用）。署名链：上善无形「溟月」→ ZipZipPipe 女仆版 → 社区 Q 版大肥鱼；参考 [TreapGoGo/deepseek-whale-girl](https://github.com/TreapGoGo/deepseek-whale-girl)；动画由 metsh 绘制。
+  - Claude娘：metsh 原创同人角色，CC BY-SA 4.0。
 - 非官方社区插件，与 DeepSeek（深度求索）、Anthropic 均无隶属关系。
 
 ---
@@ -145,4 +147,4 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 
 Install: `dsh plugin --profile web add github:sherconan/dsh-task-mascot`, then restart `dsh web`.
 
-Code MIT © metsh. Artwork: see ART_LICENSE.md. Unofficial; not affiliated with DeepSeek or Anthropic.
+Code MIT © metsh. Artwork: 大肥鱼 CC BY-NC-SA 4.0 (「溟月」 by 上善无形 → ZipZipPipe → community 大肥鱼; via TreapGoGo/deepseek-whale-girl), Claude娘 CC BY-SA 4.0 — see ART_LICENSE.md. Unofficial; not affiliated with DeepSeek or Anthropic.
