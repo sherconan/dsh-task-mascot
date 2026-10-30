@@ -37,6 +37,8 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot
 ![search](docs/screenshot-search.png)
 ![approval](docs/screenshot-approval.png)
 
+- **大肥鱼图鉴（2.1.0）**：31 格收集卡，Agent 第一次触发某种动作（写代码、搜索、跑测试、出错……）时点亮一格并弹出「新解锁！」动画。设置页「打开图鉴」或右键悬浮角色查看；进度只存在本地 localStorage。
+
 ## 工具 → 动画映射 / Tool → state mapping
 
 > v2 新增的状态、bash 命令细分、轮次/重试/时长规则见 [docs/states-v2.md](docs/states-v2.md)。
@@ -133,6 +135,7 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 - 角色素材：见 [ART_LICENSE.md](ART_LICENSE.md)。
   - 大肥鱼动画：**CC BY-NC-SA 4.0**（非商用）。署名链：上善无形「溟月」→ ZipZipPipe 女仆版 → 社区 Q 版大肥鱼；参考 [TreapGoGo/deepseek-whale-girl](https://github.com/TreapGoGo/deepseek-whale-girl)；动画由 metsh 绘制。
   - Claude娘：metsh 原创同人角色，CC BY-SA 4.0。
+  - 大肥鱼图鉴卡片（`assets/packs/dafeiyu/dex/`）为上述大肥鱼动画的衍生素材，同样按 CC BY-NC-SA 4.0 发布、署名链不变。
 - 非官方社区插件，与 DeepSeek（深度求索）、Anthropic 均无隶属关系。
 
 ---

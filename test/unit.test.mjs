@@ -233,3 +233,13 @@ test('v2: non-zero shell exit counts as failure (retry -> worried), diff exit do
   assert.equal(v.state, 'diff');
   assert.equal(call('d', 'ls', 'x\n[exit code: 0]').state, 'cmd');
 });
+
+test('dex: 31 public entries map to real states and unlock once', () => {
+  const m = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/dex/manifest.json', import.meta.url), 'utf8'));
+  assert.equal(m.entries.length, 31); assert.equal(m.private, false);
+  for (const e of m.entries) { assert.ok(I.ALL_STATES.includes(e.id), e.id); for (const k of ['lit', 'lit@2x', 'locked', 'locked@2x']) assert.ok(readFileSync(new URL('../assets/packs/dafeiyu/dex/' + e[k], import.meta.url)).length > 0); }
+  I.dex.m = m; I.dexLit().clear();
+  assert.equal(I.dexUnlock('coding', { silent: true }), true);
+  assert.equal(I.dexUnlock('coding', { silent: true }), false);
+  assert.equal(I.dexUnlock('idle', { silent: true }), false);
+});

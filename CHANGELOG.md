@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0
+
+- 新增大肥鱼图鉴：31 格（对应 docs/states-v2.md，不含 `_b` 变体），首次进入某状态时点亮并弹出解锁动画；`window.MascotDex.unlock(id)` 首次返回 true，进度存 localStorage（`dsh-mascot-dex:public`）。
+- 设置页新增：图鉴收集开关、新解锁弹窗开关、「打开图鉴」按钮；悬浮角色右键打开图鉴。
+
 ## 2.0.1
 
 - 清理构建脚本里的本地路径默认值。
