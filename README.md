@@ -9,12 +9,25 @@
 
 ## 安装
 
+> 已验证：**DSH 0.2.2-rc.1**（npm `latest`，2026-11-09，Linux · `dsh web`）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
+
+**`dsh web`（命令行）**
+
 ```bash
-dsh plugin --profile web add github:sherconan/dsh-task-mascot
+dsh plugin --profile web add github:sherconan/dsh-task-mascot   # 或 npm 包：dsh-task-mascot
 ```
 
-然后重启 `dsh web`。安装后会自动加入 web profile 的 bundles；设置入口：Settings → **任务角色 Mascot**。
-要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
+然后重启 `dsh web`。安装会自动把插件加进 web profile 的 bundles，不用手改配置。
+
+**`dsh web`（界面里装）**：左侧栏 **Plugins（插件）** → **Add plugin（添加插件）** → 输入 `dsh-task-mascot` → **Install（安装）** → 打开插件卡片右侧的开关（启用），刷新页面即可。
+
+**DSH Desktop（桌面版）**：Desktop 用自己独占的 `desktop` profile，上面 `--profile web` 的命令装进的是 web profile，**Desktop 里看不到**；npm 装的 `dsh` 也不能改 Desktop 的 profile。请在 Desktop 里按同样步骤 **Plugins → Add plugin → `dsh-task-mascot`** 安装并启用；或者用 Desktop 自带的 dsh 命令（应用菜单「管理 dsh 命令…」安装），先完全退出 Desktop，再运行 `dsh plugin --profile desktop add dsh-task-mascot`，重新打开即可。（以上 Desktop 步骤依据 [官方 Desktop 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.zh.md#bundled-command-runtime)，尚未在 Desktop 实机验证，遇到问题欢迎提 issue。）
+
+**设置入口**（0.2.1 起没有独立的 Settings 页面）：左下角 **More（更多）→ Settings（设置）→ 任务角色 Mascot**。插件页里 dsh-task-mascot 的卡片只有启用开关和说明页，配置项不在卡片上。
+
+![DSH 0.2.2-rc.1 里的设置入口](docs/screenshot-settings-dsh-0.2.2.png)
+
+旧版本：0.2.0 及更早的设置入口在 Settings 页面里，同样找「任务角色 Mascot」（本次没有在旧版重测）。
 
 ## 特点
 
@@ -152,6 +165,10 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 - Swappable character packs (ships Whale Girl 大肥鱼 and Claude娘) and an editable tool→animation mapping. ~13 MB.
 - Runs fully locally; makes no external network calls.
 
-Install: `dsh plugin --profile web add github:sherconan/dsh-task-mascot`, then restart `dsh web`.
+Install (verified on **DSH 0.2.2-rc.1**, Linux, `dsh web`; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
+
+- `dsh web`: `dsh plugin --profile web add github:sherconan/dsh-task-mascot` (or the npm package `dsh-task-mascot`), then restart `dsh web`. Or in the UI: **Plugins → Add plugin → `dsh-task-mascot` → Install**, turn on the switch on its card, and refresh.
+- DSH Desktop: Desktop owns its own `desktop` profile, so a `--profile web` install does **not** show up there. Install from Desktop's **Plugins → Add plugin**, or quit Desktop and run its bundled `dsh plugin --profile desktop add dsh-task-mascot`. (Per the [official Desktop docs](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md#bundled-command-runtime); not yet tested on Desktop.)
+- Settings: from 0.2.1 there is no standalone Settings page. Open **More (bottom-left) → Settings → 任务角色 Mascot**. The plugin's card on the Plugins page only has the enable switch and the readme. On 0.2.0 and older, look for the same section in Settings.
 
 Code MIT © metsh. Artwork: 大肥鱼 CC BY-NC-SA 4.0 (「溟月」 by 上善无形 → ZipZipPipe → community 大肥鱼; via TreapGoGo/deepseek-whale-girl), Claude娘 CC BY-SA 4.0 — see ART_LICENSE.md. Unofficial; not affiliated with DeepSeek or Anthropic.
