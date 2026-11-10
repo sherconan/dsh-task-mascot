@@ -243,3 +243,24 @@ test('dex: 31 public entries map to real states and unlock once', () => {
   assert.equal(I.dexUnlock('coding', { silent: true }), false);
   assert.equal(I.dexUnlock('idle', { silent: true }), false);
 });
+
+test('2.1.1: dock bar does not duplicate a visible inline card (auto by default)', () => {
+  assert.equal(I.DEFAULT_SETTINGS.dockMode, 'auto');
+  const base = { dock: true, inline: true, dockMode: 'auto', live: true };
+  assert.equal(I.dockShouldShow({ ...base, inlineInView: true }), false, 'inline card on screen -> no dock bar');
+  assert.equal(I.dockShouldShow({ ...base, inlineInView: false }), true, 'inline card scrolled away / missing -> dock bar');
+  assert.equal(I.dockShouldShow({ ...base, inline: false, inlineInView: false }), true, 'inline surface off -> dock bar');
+  assert.equal(I.dockShouldShow({ ...base, dockMode: 'always', inlineInView: true }), true, 'always = old behaviour');
+  assert.equal(I.dockShouldShow({ ...base, dockMode: undefined, inlineInView: true }), false, 'saved settings without dockMode behave as auto');
+  assert.equal(I.dockShouldShow({ ...base, dock: false, inlineInView: false }), false);
+  assert.equal(I.dockShouldShow({ ...base, live: false, inlineInView: false }), false);
+});
+
+test('2.1.1: several unlocks merge into one toast line', () => {
+  const m = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/dex/manifest.json', import.meta.url), 'utf8'));
+  const one = I.dexToastText([m.entries[1]]);
+  assert.match(one.title, /^新解锁！#\d\d$/); assert.equal(one.line, m.entries[1].label);
+  const many = I.dexToastText(m.entries.slice(0, 6));
+  assert.equal(many.title, '新解锁 ×6'); assert.ok(many.line.endsWith(' 等')); assert.equal(many.line.split('、').length, 4);
+  for (const e of m.entries) for (const k of ['lit', 'lit@2x']) assert.ok(e[k], e.id + ' ' + k);
+});
