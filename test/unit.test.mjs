@@ -15,7 +15,7 @@ test('client exports plugin entry', () => { assert.equal(typeof C.apply, 'functi
 
 test('default tool mapping', () => {
   const r = I.compileRules(I.DEFAULT_RULES);
-  const cases = { bash: 'cmd', pwsh: 'cmd', terminal_send: 'cmd', read: 'reading', grep: 'search', glob: 'search', web_search: 'web', web_fetch: 'web', read_image: 'media', mcp__github__x: 'mcp', session_search: 'memory', create_worktree: 'git', write: 'coding', edit: 'editing', str_replace_editor: 'editing', todo_write: 'planning', update_goal: 'planning', subagent: 'subagents', spawn_teammate: 'subagents', ask_user_question: 'waiting', run_code: 'data', present: 'summary', some_mcp_tool: 'tools' };
+  const cases = { bash: 'cmd', pwsh: 'cmd', terminal_send: 'cmd', read: 'reading', grep: 'search', glob: 'search', web_search: 'web', web_fetch: 'web', read_image: 'media', mcp__github__x: 'mcp', session_search: 'memory', create_worktree: 'git', write: 'coding', edit: 'editing', str_replace_editor: 'editing', apply_patch: 'editing', todo_write: 'planning', update_goal: 'planning', subagent: 'subagents', spawn_teammate: 'subagents', subagent_fork: 'subagents', wait_agent: 'subagents', ask_user_question: 'waiting', propose_action: 'waiting', run_code: 'data', present: 'summary', some_mcp_tool: 'tools' };
   for (const [t, s] of Object.entries(cases)) assert.equal(I.stateForTool(t, undefined, r), s, t);
   assert.equal(I.stateForTool('write', { ext: 'md' }, r), 'writingdoc');
   assert.equal(I.stateForTool('edit', { ext: 'ts' }, r), 'editing');
@@ -84,6 +84,9 @@ test('actionText renders Chinese action lines from args', () => {
   assert.equal(I.actionText('grep', { pattern: 'xxx', path: '.' }), '正在搜索 "xxx"');
   assert.equal(I.actionText('bash', { command: 'npm test' }), '运行 npm test');
   assert.equal(I.actionText('mcp__github__create_issue', {}), '调用 MCP: github · create_issue');
+  assert.equal(I.actionText('apply_patch', { path: 'src/a.js' }), '正在改 src/a.js');
+  assert.equal(I.actionText('subagent_fork', { description: '查资料' }), '派出子代理：查资料');
+  assert.equal(I.actionText('propose_action', {}), '正在等你确认');
   assert.equal(I.partialArgs('{"file_path":"src/ma').file_path, undefined); // unfinished value hidden (no 'REA' flicker)
   assert.equal(I.partialArgs('{"file_path":"src/main.js","con').file_path, 'src/main.js');
   assert.equal(I.actionText('read', I.partialArgs('{"file_path":"REA')), '正在读 文件');
@@ -137,7 +140,7 @@ test('v2 bash sub-classification and write->create', () => {
 });
 
 test('every real DSH tool maps to a state every pack can play', () => {
-  const tools = ['bash', 'pwsh', 'read', 'read_image', 'write', 'edit', 'str_replace_editor', 'glob', 'grep', 'web_fetch', 'web_search', 'subagent', 'spawn_teammate', 'wait_agent', 'send_message', 'team_task_create', 'todo_write', 'create_goal', 'update_goal', 'ralph', 'schedule_create', 'job_output', 'terminal_send', 'session_search', 'list_mcp_resources', 'read_mcp_resource', 'mcp__x__y', 'skill', 'plugin_manager', 'plugin_market', 'working_directory', 'create_worktree', 'load_workspace_dependencies', 'present', 'ask_user_question', 'exit_plan_mode', 'lsp', 'stagehand_act', 'cordis_inspect_tree', 'run_code'];
+  const tools = ['bash', 'pwsh', 'read', 'read_image', 'write', 'edit', 'str_replace_editor', 'apply_patch', 'glob', 'grep', 'web_fetch', 'web_search', 'subagent', 'subagent_fork', 'subagent_oar', 'spawn_teammate', 'wait_agent', 'send_message', 'team_task_create', 'todo_write', 'create_goal', 'update_goal', 'ralph', 'schedule_create', 'job_output', 'terminal_send', 'user_terminal_list', 'user_terminal_read', 'session_search', 'list_mcp_resources', 'list_mcp_resource_templates', 'read_mcp_resource', 'mcp__x__y', 'skill', 'plugin_manager', 'plugin_market', 'working_directory', 'create_worktree', 'load_workspace_dependencies', 'present', 'ask_user_question', 'propose_action', 'exit_plan_mode', 'lsp', 'stagehand_act', 'cordis_inspect_tree', 'run_code', 'office_convert', 'office_recalculate', 'office_render'];
   const r = I.compileRules(I.DEFAULT_RULES);
   for (const pack of ['dafeiyu', 'claude']) {
     const m = JSON.parse(readFileSync(new URL('../assets/packs/' + pack + '/manifest.json', import.meta.url), 'utf8'));
@@ -263,4 +266,61 @@ test('2.1.1: several unlocks merge into one toast line', () => {
   const many = I.dexToastText(m.entries.slice(0, 6));
   assert.equal(many.title, '新解锁 ×6'); assert.ok(many.line.endsWith(' 等')); assert.equal(many.line.split('、').length, 4);
   for (const e of m.entries) for (const k of ['lit', 'lit@2x']) assert.ok(e[k], e.id + ' ' + k);
+});
+
+test('0.2.2-rc.2: each new tool name maps to a specific state (not generic tools)', () => {
+  const r = I.compileRules(I.DEFAULT_RULES);
+  const cases = {
+    apply_patch: 'editing',
+    subagent_fork: 'subagents',
+    subagent_oar: 'subagents',
+    wait_agent: 'subagents',
+    user_terminal_list: 'reading',
+    user_terminal_read: 'reading',
+    list_mcp_resource_templates: 'mcp',
+    office_convert: 'writingdoc',
+    office_recalculate: 'data',
+    office_render: 'writingdoc',
+    propose_action: 'waiting',
+    spawn_teammate: 'subagents',
+  };
+  for (const [t, s] of Object.entries(cases)) assert.equal(I.stateForTool(t, undefined, r), s, t);
+  assert.equal(I.stateForTool('apply_patch', { ext: 'md' }, r), 'writingdoc');
+  assert.equal(I.stateForTool('apply_patch', { ext: 'ts' }, r), 'editing');
+  assert.equal(I.toolPath({ input: '*** Update File: docs/README.md\n@@\n-a\n+b\n' }), 'docs/README.md');
+  assert.equal(I.actionText('apply_patch', { input: '*** Update File: docs/README.md\n@@\n-a\n+b\n' }), '正在改 docs/README.md');
+  assert.equal(I.actionText('subagent_oar', { description: '用 Codex 改' }), '派出子代理：用 Codex 改');
+  assert.equal(I.actionText('wait_agent', {}), '等子代理回来');
+  assert.equal(I.actionText('user_terminal_list', {}), '正在查看终端列表');
+  assert.equal(I.actionText('user_terminal_read', { terminal: 'bash-1' }), '正在读终端输出 bash-1');
+  assert.equal(I.actionText('list_mcp_resource_templates', {}), '列出 MCP 资源模板');
+  assert.equal(I.actionText('office_convert', { path: 'a.docx' }), '正在转换文档 a.docx');
+  assert.equal(I.actionText('office_recalculate', { path: 'b.xlsx' }), '正在重算表格 b.xlsx');
+  assert.equal(I.actionText('office_render', { path: 'c.pptx' }), '正在渲染文档 c.pptx');
+});
+
+test('0.2.2-rc.2: apply_patch path from patch body and sandbox deny is a failure', () => {
+  const ck = (() => { let n = 0, timers = []; return { now: () => n, schedule: (fn, ms) => { const id = { at: n + ms, fn }; timers.push(id); return id; }, advance: (ms) => { n += ms; const due = timers.filter((t) => t.at <= n); timers = timers.filter((t) => t.at > n); due.forEach((t) => t.fn()); } }; })();
+  // Prefer the repo's fakeClock if the previous tests defined helpers we can reuse via a compact inline clock.
+  const E = (type, data, seq) => ({ type: 'event', event: { type, seq, time: ck.now(), data } });
+  const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  let q = 0;
+  tr.feed(E('turn/start', { turn: 1 }, ++q), true, ck.now());
+  tr.feed(E('tool/call', { callId: 'p1', name: 'apply_patch', arguments: JSON.stringify({ input: '*** Update File: src/app.ts\n@@\n-a\n+b\n' }) }, ++q), true, ck.now());
+  assert.equal(tr.view().state, 'editing');
+  assert.equal(tr.view().steps[0].text, '正在改 src/app.ts');
+  tr.feed(E('tool/result', { message: { toolCallId: 'p1', isError: false, content: 'ok' } }, ++q), true, ck.now());
+  tr.feed(E('tool/call', { callId: 'p2', name: 'apply_patch', arguments: JSON.stringify({ input: '*** Update File: notes.md\n@@\n-a\n+b\n' }) }, ++q), true, ck.now());
+  assert.equal(tr.view().state, 'writingdoc');
+  tr.feed(E('tool/result', { message: { toolCallId: 'p2', isError: false, content: 'ok' } }, ++q), true, ck.now());
+  tr.feed(E('tool/call', { callId: 'p3', name: 'subagent_fork', arguments: JSON.stringify({ description: '查一下' }) }, ++q), true, ck.now());
+  assert.equal(tr.view().state, 'subagents');
+  tr.feed(E('tool/result', { message: { toolCallId: 'p3', isError: false, content: 'done' } }, ++q), true, ck.now());
+  tr.feed(E('tool/call', { callId: 'p4', name: 'propose_action', arguments: '{}' }, ++q), true, ck.now());
+  assert.equal(tr.view().state, 'waiting');
+  assert.equal(I.shellFailed({ tool: 'bash', args: { command: 'cat /etc/shadow' } }, { content: '[sandbox: file access denied under workspace mode]\n' }), true);
+  assert.equal(I.shellFailed({ tool: 'bash', args: { command: 'ls' } }, { content: 'ok\n[exit code: 0]' }), false);
+  tr.feed(E('tool/call', { callId: 'p5', name: 'bash', arguments: JSON.stringify({ command: 'cat secret.txt' }) }, ++q), true, ck.now());
+  tr.feed(E('tool/result', { message: { toolCallId: 'p5', isError: false, content: [{ type: 'text', text: '[sandbox: file access denied under workspace mode]\n' }] } }, ++q), true, ck.now());
+  assert.equal(tr.view().state, 'error');
 });

@@ -9,7 +9,7 @@
 
 ## 安装
 
-> 已验证：**DSH 0.2.2-rc.1**（npm `latest`，2026-11-09，Linux · `dsh web`）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
+> 已验证：**DSH 0.2.2-rc.2**（npm `next`，2026-11-12，Linux · `dsh web`；此前 2.1.1 已在 0.2.2-rc.1 验证安装路径）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
 
 **`dsh web`（命令行）**
 
@@ -61,16 +61,18 @@ First match wins (`tool`/`ext` are regexes; `ext` = target file extension). Edit
 
 | dsh 工具 / tools | 状态 / state | 大肥鱼实际动画 |
 |---|---|---|
-| `write` / `edit` / `str_replace_editor` 且目标是 md/txt/rst/doc/tex | `writingdoc` 写文档 | editing（回退）|
+| `write` / `edit` / `str_replace_editor` / `apply_patch` 且目标是 md/txt/rst/doc/tex | `writingdoc` 写文档 | editing（回退）|
 | `write` | `coding` 写代码 | coding |
-| `edit`, `str_replace_editor` | `editing` 改代码 | editing |
-| `read`, `read_image`, `read_mcp_resource`, `lsp` | `reading` 读文件 | reading |
+| `edit`, `str_replace_editor`, `apply_patch` | `editing` 改代码 | editing |
+| `read`, `read_image`, `read_mcp_resource`, `lsp`, `user_terminal_list`, `user_terminal_read` | `reading` 读文件 | reading |
 | `glob`, `grep`, `session_*`, `web_search`, `web_fetch`, `stagehand_*` | `search` 搜索 | search |
 | `bash`, `pwsh`, `terminal_*`, `job_*` | `cmd` 跑命令 | cmd |
-| `run_code`, `workflow` | `data` 跑数据 | reading（回退）|
+| `run_code`, `workflow`, `office_recalculate` | `data` 跑数据 | reading（回退）|
+| `office_convert`, `office_render` | `writingdoc` 写文档 | editing（回退）|
 | `todo_write`, `exit_plan_mode`, `*_goal`, `schedule_*` | `planning` 做计划 | planning |
-| `subagent`, `send_message`, `list_agents`, `interrupt_agent`, `spawn_teammate`, `team_task_*`, `ralph` | `subagents` 派子代理 | subagents |
-| `ask_user_question` | `waiting` 等你 | waiting |
+| `subagent`, `subagent_fork`, `subagent_oar`, `send_message`, `list_agents`, `interrupt_agent`, `spawn_teammate`, `wait_agent`, `team_task_*`, `ralph` | `subagents` 派子代理 | subagents |
+| `ask_user_question`, `propose_action` | `waiting` 等你确认 | waiting |
+| `list_mcp_resources`, `list_mcp_resource_templates`, `mcp__*` | `mcp` 调用 MCP | tools（回退）|
 | `present` | `summary` 总结 | thinking（回退）|
 | 其它 (MCP 等) / anything else | `tools` | cmd（回退）|
 
@@ -165,7 +167,7 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 - Swappable character packs (ships Whale Girl 大肥鱼 and Claude娘) and an editable tool→animation mapping. ~13 MB.
 - Runs fully locally; makes no external network calls.
 
-Install (verified on **DSH 0.2.2-rc.1**, Linux, `dsh web`; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
+Install (verified on **DSH 0.2.2-rc.2**, Linux, `dsh web`; 2.1.1 was verified on 0.2.2-rc.1; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
 
 - `dsh web`: `dsh plugin --profile web add github:sherconan/dsh-task-mascot` (or the npm package `dsh-task-mascot`), then restart `dsh web`. Or in the UI: **Plugins → Add plugin → `dsh-task-mascot` → Install**, turn on the switch on its card, and refresh.
 - DSH Desktop: Desktop owns its own `desktop` profile, so a `--profile web` install does **not** show up there. Install from Desktop's **Plugins → Add plugin**, or quit Desktop and run its bundled `dsh plugin --profile desktop add dsh-task-mascot`. (Per the [official Desktop docs](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md#bundled-command-runtime); not yet tested on Desktop.)
