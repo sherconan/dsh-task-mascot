@@ -237,9 +237,9 @@ test('v2: non-zero shell exit counts as failure (retry -> worried), diff exit do
   assert.equal(call('d', 'ls', 'x\n[exit code: 0]').state, 'cmd');
 });
 
-test('dex: 31 public entries map to real states and unlock once', () => {
+test('dex: 32 public entries map to real states and unlock once', () => {
   const m = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/dex/manifest.json', import.meta.url), 'utf8'));
-  assert.equal(m.entries.length, 31); assert.equal(m.private, false);
+  assert.equal(m.entries.length, 32); assert.equal(m.private, false);
   for (const e of m.entries) { assert.ok(I.ALL_STATES.includes(e.id), e.id); for (const k of ['lit', 'lit@2x', 'locked', 'locked@2x']) assert.ok(readFileSync(new URL('../assets/packs/dafeiyu/dex/' + e[k], import.meta.url)).length > 0); }
   I.dex.m = m; I.dexLit().clear();
   assert.equal(I.dexUnlock('coding', { silent: true }), true);
@@ -323,4 +323,39 @@ test('0.2.2-rc.2: apply_patch path from patch body and sandbox deny is a failure
   tr.feed(E('tool/call', { callId: 'p5', name: 'bash', arguments: JSON.stringify({ command: 'cat secret.txt' }) }, ++q), true, ck.now());
   tr.feed(E('tool/result', { message: { toolCallId: 'p5', isError: false, content: [{ type: 'text', text: '[sandbox: file access denied under workspace mode]\n' }] } }, ++q), true, ck.now());
   assert.equal(tr.view().state, 'error');
+});
+
+test('0.2.2-rc.5: CONTENT_REFUSED is a model refusal, not a generic error', () => {
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule }); let q = 0;
+  const live = (e) => tr.feed(e, true, ck.now());
+  assert.equal(I.turnErrorCode({ reason: { kind: 'error', error: { code: 'CONTENT_REFUSED', message: 'DeepSeek refused to answer under its content safety review' } } }), 'CONTENT_REFUSED');
+  assert.equal(I.turnErrorCode({ reason: { kind: 'error', error: { code: 'MALFORMED_RESPONSE', message: 'bad' } } }), 'MALFORMED_RESPONSE');
+  assert.equal(I.turnErrorCode({ reason: { kind: 'completed' } }), '');
+  assert.equal(I.resolveState('refused', JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/manifest.json', import.meta.url), 'utf8'))), 'worried');
+  live(E('turn/start', { turn: 1 }, ++q));
+  live(E('turn/end', { reason: { kind: 'error', error: { code: 'CONTENT_REFUSED', message: 'DeepSeek refused to answer under its content safety review' } } }, ++q));
+  assert.equal(tr.view().state, 'refused');
+  assert.equal(tr.view().text, '模型拒绝回答这个请求');
+  assert.equal(tr.view().outcome, 'refused');
+  assert.equal(tr.S.cur.kind, 'refused', 'kind is not error, so the error sound does not play');
+  // old MALFORMED_RESPONSE and other LLM errors stay generic
+  const t2 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  t2.feed(E('turn/start', { turn: 1 }, 1), true, ck.now());
+  t2.feed(E('turn/end', { reason: { kind: 'error', error: { code: 'MALFORMED_RESPONSE', message: 'bad stream' } } }, 2), true, ck.now());
+  assert.equal(t2.view().state, 'error');
+  assert.match(t2.view().text, /本轮出错（error）/);
+  assert.equal(t2.S.cur.kind, 'error');
+  const t3 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  t3.feed(E('turn/start', { turn: 1 }, 1), true, ck.now());
+  t3.feed(E('turn/end', { reason: { kind: 'error' } }, 2), true, ck.now());
+  assert.equal(t3.view().state, 'error');
+  // a normal tool turn still ends with 完成
+  const t4 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  t4.feed(E('turn/start', { turn: 1 }, 1), true, ck.now());
+  t4.feed(E('tool/call', { callId: 'r1', name: 'read', arguments: '{"file_path":"README.md"}' }, 2), true, ck.now());
+  assert.equal(t4.view().state, 'reading');
+  t4.feed(E('tool/result', { message: { toolCallId: 'r1', isError: false, content: 'ok' } }, 3), true, ck.now());
+  t4.feed(E('turn/end', { reason: { kind: 'completed' } }, 4), true, ck.now());
+  assert.equal(t4.view().state, 'done');
+  assert.match(t4.view().text, /完成 · 共 1 步/);
 });

@@ -482,6 +482,20 @@
       "lit@2x": "cards/done.lit@2x.png",
       "locked": "cards/done.locked.png",
       "locked@2x": "cards/done.locked@2x.png"
+    },
+    {
+      "id": "refused",
+      "index": 32,
+      "label": "模型拒答",
+      "trigger": "模型以 refusal 结束（CONTENT_REFUSED）",
+      "group": "fail",
+      "art": "art/refused.png",
+      "anim": "anim/worried.webm",
+      "artSourceState": "worried",
+      "lit": "cards/refused.lit.png",
+      "lit@2x": "cards/refused.lit@2x.png",
+      "locked": "cards/refused.locked.png",
+      "locked@2x": "cards/refused.locked@2x.png"
     }
   ]
 }

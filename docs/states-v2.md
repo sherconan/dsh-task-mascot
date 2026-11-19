@@ -32,6 +32,7 @@ v2 让大肥鱼不只"跟着每一步工具调用动"，还能看懂**整个 age
 | `worried` | 担心 | 连续失败 ≥ 2 次（`worriedN`） | 捂嘴着急 | error |
 | `denied` | 被拒绝 | 你在审批里点了拒绝 | 双手 ✗ | error |
 | `interrupted` | 已中断 | 你中断 / turn 被取消 | 惊讶 | waiting → idle |
+| `refused` | 模型拒答 | 模型流以 `refusal` 结束，`turn/end` 错误码 `CONTENT_REFUSED` | 担心（worried） | worried → error |
 | `waiting` | 等你 | 审批或提问挂起 | — | — |
 | `sweat` | 有点久 | 一步运行 ≥ 20 s（或思考 ≥ 20 s，文字改成"深度思考中…"） | 冒汗 | thinking |
 | `tired` | 累了 | 一步 ≥ 60 s（3×步长阈值），或整轮 ≥ 2 min 时仍在思考 | 打哈欠 | waiting → thinking |
@@ -48,7 +49,7 @@ v2 让大肥鱼不只"跟着每一步工具调用动"，还能看懂**整个 age
 - **shell 退出码**：DSH 把非 0 退出当作普通结果（`isError:false`，结尾 `[exit code: N]`），v2 会识别为失败；`diff/cmp/grep/rg/test/[` 的非 0 退出是"答案"而不是错误，不算。
 - **忙碌**：两次模型输出之间连续发出的工具调用计数，≥ `busyN`（5）进入 `busy`。
 - **子任务**：子代理成功返回 → `子任务完成：…`；待办完成数增加 → `完成一项待办（x/y）`。
-- **拒绝 / 中断**：审批被拒 → `denied`（`你拒绝了这一步，换个办法`）；中断或取消 → `interrupted`（`已中断`）。
+- **拒绝 / 中断**：审批被拒 → `denied`（`你拒绝了这一步，换个办法`）；中断或取消 → `interrupted`（`已中断`）。模型拒答（`CONTENT_REFUSED`）→ `refused`（`模型拒绝回答这个请求`），不走出错提示音。
 
 ## 3. 时长升级
 

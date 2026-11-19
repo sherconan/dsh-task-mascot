@@ -9,7 +9,7 @@
 
 ## 安装
 
-> 已验证：**DSH 0.2.2-rc.2**（npm `next`，2026-11-12，Linux · `dsh web`；此前 2.1.1 已在 0.2.2-rc.1 验证安装路径）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
+> 已验证：**DSH 0.2.2-rc.5**（npm `next`，2026-11-18，Linux · `dsh web`）；此前 **0.2.2-rc.2**（2026-11-12，Linux · `dsh web`）；**DSH Desktop (macOS)** 已在 0.2.2-rc.1 上验证安装与启动加载（插件 2.1.2，2026-11-16）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
 
 **`dsh web`（命令行）**
 
@@ -21,7 +21,7 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot   # 或 npm 包：
 
 **`dsh web`（界面里装）**：左侧栏 **Plugins（插件）** → **Add plugin（添加插件）** → 输入 `dsh-task-mascot` → **Install（安装）** → 打开插件卡片右侧的开关（启用），刷新页面即可。
 
-**DSH Desktop（桌面版）**：Desktop 用自己独占的 `desktop` profile，上面 `--profile web` 的命令装进的是 web profile，**Desktop 里看不到**；npm 装的 `dsh` 也不能改 Desktop 的 profile。请在 Desktop 里按同样步骤 **Plugins → Add plugin → `dsh-task-mascot`** 安装并启用；或者用 Desktop 自带的 dsh 命令（应用菜单「管理 dsh 命令…」安装），先完全退出 Desktop，再运行 `dsh plugin --profile desktop add dsh-task-mascot`，重新打开即可。（以上 Desktop 步骤依据 [官方 Desktop 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.zh.md#bundled-command-runtime)，尚未在 Desktop 实机验证，遇到问题欢迎提 issue。）
+**DSH Desktop（桌面版）**：Desktop 用自己独占的 `desktop` profile，上面 `--profile web` 的命令装进的是 web profile，**Desktop 里看不到**；npm 装的 `dsh` 也不能改 Desktop 的 profile。请在 Desktop 里按同样步骤 **Plugins → Add plugin → `dsh-task-mascot`** 安装并启用；或者用 Desktop 自带的 dsh 命令（应用菜单「管理 dsh 命令…」安装），先完全退出 Desktop，再运行 `dsh plugin --profile desktop add dsh-task-mascot`，重新打开即可。已在 **macOS DSH Desktop 0.2.2-rc.1** 实机验证安装与启动加载（依据 [官方 Desktop 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.zh.md#bundled-command-runtime)）。
 
 **设置入口**（0.2.1 起没有独立的 Settings 页面）：左下角 **More（更多）→ Settings（设置）→ 任务角色 Mascot**。插件页里 dsh-task-mascot 的卡片只有启用开关和说明页，配置项不在卡片上。
 
@@ -50,7 +50,7 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot   # 或 npm 包：
 ![search](docs/screenshot-search.png)
 ![approval](docs/screenshot-approval.png)
 
-- **大肥鱼图鉴（2.1.0）**：31 格收集卡，Agent 第一次触发某种动作（写代码、搜索、跑测试、出错……）时点亮一格，右上角弹出一张不挡对话的「新解锁」小提示（短时间内连续解锁会合并成一张，点它打开图鉴）。设置页「打开图鉴」或右键悬浮角色查看；进度只存在本地 localStorage。
+- **大肥鱼图鉴（2.1.0）**：32 格收集卡，Agent 第一次触发某种动作（写代码、搜索、跑测试、出错……）时点亮一格，右上角弹出一张不挡对话的「新解锁」小提示（短时间内连续解锁会合并成一张，点它打开图鉴）。设置页「打开图鉴」或右键悬浮角色查看；进度只存在本地 localStorage。
 
 ## 工具 → 动画映射 / Tool → state mapping
 
@@ -167,10 +167,10 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 - Swappable character packs (ships Whale Girl 大肥鱼 and Claude娘) and an editable tool→animation mapping. ~13 MB.
 - Runs fully locally; makes no external network calls.
 
-Install (verified on **DSH 0.2.2-rc.2**, Linux, `dsh web`; 2.1.1 was verified on 0.2.2-rc.1; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
+Install (verified on **DSH 0.2.2-rc.5**, Linux, `dsh web`, 2026-11-18; previously **0.2.2-rc.2**; **DSH Desktop (macOS)** install and startup load verified on 0.2.2-rc.1 with plugin 2.1.2, 2026-11-16; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
 
 - `dsh web`: `dsh plugin --profile web add github:sherconan/dsh-task-mascot` (or the npm package `dsh-task-mascot`), then restart `dsh web`. Or in the UI: **Plugins → Add plugin → `dsh-task-mascot` → Install**, turn on the switch on its card, and refresh.
-- DSH Desktop: Desktop owns its own `desktop` profile, so a `--profile web` install does **not** show up there. Install from Desktop's **Plugins → Add plugin**, or quit Desktop and run its bundled `dsh plugin --profile desktop add dsh-task-mascot`. (Per the [official Desktop docs](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md#bundled-command-runtime); not yet tested on Desktop.)
+- DSH Desktop: Desktop owns its own `desktop` profile, so a `--profile web` install does **not** show up there. Install from Desktop's **Plugins → Add plugin**, or quit Desktop and run its bundled `dsh plugin --profile desktop add dsh-task-mascot`. Verified on **macOS DSH Desktop 0.2.2-rc.1** (install and startup load). (Per the [official Desktop docs](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md#bundled-command-runtime).)
 - Settings: from 0.2.1 there is no standalone Settings page. Open **More (bottom-left) → Settings → 任务角色 Mascot**. The plugin's card on the Plugins page only has the enable switch and the readme. On 0.2.0 and older, look for the same section in Settings.
 
 Code MIT © metsh. Artwork: 大肥鱼 CC BY-NC-SA 4.0 (「溟月」 by 上善无形 → ZipZipPipe → community 大肥鱼; via TreapGoGo/deepseek-whale-girl), Claude娘 CC BY-SA 4.0 — see ART_LICENSE.md. Unofficial; not affiliated with DeepSeek or Anthropic.

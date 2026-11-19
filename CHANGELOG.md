@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.3
+
+- 识别 DSH 0.2.2-rc.3 起的模型拒答：`turn/end` 的 `reason.error.code` 为 `CONTENT_REFUSED` 时，显示「模型拒绝回答这个请求」，用担心的表情，不播放出错提示音。旧的 `MALFORMED_RESPONSE` 仍按普通出错处理。
+- 大肥鱼图鉴新增第 32 格「模型拒答」（沿用担心的画，不含新动画文件）。
+- 已在 DSH 0.2.2-rc.5（dsh web，mock LLM）实测拒答文案与普通工具回合。测试 21 项。
+
 ## 2.1.2
 
 - 补上 DSH 0.2.2-rc.2 里一批原先只显示「用工具」的工具映射：`apply_patch` 按扩展名走改代码/写文档，`subagent_fork` / `subagent_oar` / `wait_agent` 走派子代理，`propose_action` 走等你确认，`user_terminal_list` / `user_terminal_read` 走读文件，`list_mcp_resource_templates` 走 MCP，`office_convert` / `office_render` 走写文档，`office_recalculate` 走跑数据。
