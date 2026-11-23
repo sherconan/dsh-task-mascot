@@ -3,7 +3,9 @@
 > **真跟着 Agent 每一步工具调用在动。**
 > DeepSeek Harness（dsh）Web 插件 · by **metsh** · 社区：[LINUX DO](https://linux.do)
 
-![demo](docs/demo.gif)
+![2.2.0 实录：待办清单 + 本轮花费](docs/demo-2.2.0.gif)
+
+2.2.0 实录：待办清单 + 本轮花费
 
 大部分"桌宠"只是挂在角落循环播放动画。Task Mascot 直接订阅会话的实时事件流：Agent 每调用一个工具，角色就切到对应动作，同时告诉你它**正在对哪个文件 / 哪条命令 / 哪个关键词**做什么，成功失败一目了然。
 
