@@ -38,6 +38,7 @@ v2 让大肥鱼不只"跟着每一步工具调用动"，还能看懂**整个 age
 | `tired` | 累了 | 一步 ≥ 60 s（3×步长阈值），或整轮 ≥ 2 min 时仍在思考 | 打哈欠 | waiting → thinking |
 | `cheer` | 终于搞定 | 整轮 ≥ 2 min 且成功结束 | 欢呼 | done |
 | `done` | 完成 | turn 正常结束 | — | — |
+| `allclear` | 清单全勾 | turn 正常结束，且本轮 Agent 待办（≥ 2 项）全部勾完（2.2.0） | 欢呼（cheer） | cheer → done |
 
 `_b` 是 A/B 变体，见第 4 节。所有回退链都以角色包里实际存在的状态为准，单测会检查每个 DSH 工具在两个包里都能播。
 
@@ -48,8 +49,30 @@ v2 让大肥鱼不只"跟着每一步工具调用动"，还能看懂**整个 age
 - **连续失败**：第一次 `error`（`失败：…`），之后 `worried`（`又失败了（连续 N 次）：…`）。任一步成功即清零。
 - **shell 退出码**：DSH 把非 0 退出当作普通结果（`isError:false`，结尾 `[exit code: N]`），v2 会识别为失败；`diff/cmp/grep/rg/test/[` 的非 0 退出是"答案"而不是错误，不算。
 - **忙碌**：两次模型输出之间连续发出的工具调用计数，≥ `busyN`（5）进入 `busy`。
-- **子任务**：子代理成功返回 → `子任务完成：…`；待办完成数增加 → `完成一项待办（x/y）`。
+- **子任务**：子代理成功返回 → `子任务完成：…`；待办新勾掉 → `勾掉一项 ✓ …（x/y）`（2.2.0 起读官方 `todo/write` 事件；拿不到该事件的旧版本仍按 `todo_write` 结果显示 `完成一项待办（x/y）`）。
 - **拒绝 / 中断**：审批被拒 → `denied`（`你拒绝了这一步，换个办法`）；中断或取消 → `interrupted`（`已中断`）。模型拒答（`CONTENT_REFUSED`）→ `refused`（`模型拒绝回答这个请求`），不走出错提示音。
+
+## 2.5 Agent 待办清单与本轮花费（2.2.0）
+
+数据来源（DSH 0.2.2-rc.5 实测，回放样本见 `test/fixtures/rc5-todo-turn.json`）：
+
+- `todo/write`：`{ todos: [{ content, status: 'pending' | 'in_progress' | 'completed' }] }`，每次都是整张清单。第一次出现 → `planning`，文字 `接到 N 件事：a → b → c`；之后新勾掉的项 → `subtask`，文字 `勾掉一项 ✓ …（x/y）`。下一轮 `turn/start` 清空。
+- `assistant/message.data.usage`：`{ inputTokens（未命中缓存）, cacheReadTokens, outputTokens, totalTokens }`，来源在 `message.source.provider / model`。同一轮相加。`turn/end` 不带用量。
+
+收尾文字（`turn/end`）：
+
+| 情况 | 文字示例 |
+|---|---|
+| 正常结束，有清单且全部勾完 | `全部搞定 3/3 ✓`（≥ 2 项时状态为 `allclear`） |
+| 正常结束，有没做完的 | `这轮先到这：还剩「跑单元测试」没做` |
+| 有没跑通的步骤 | 追加 `运行 npm test 失败 2 次`（同一调用之后重试成功的不算；审批被拒写「被拒绝」） |
+| 被中断 / 输出被截断 | `已中断 · 还剩 2 项没做：…` / `输出到上限被截断` |
+| 没有清单 | 和以前一样：`完成 · 共 N 步 · R 轮` |
+| 花费 | 追加 `约 ¥0.38`；不到 1 分写 `不到 ¥0.01`；任何一次调用没有已知单价时只写 `用了 2.1 万 token` |
+
+花费估算：`(inputTokens × 未命中价 + cacheReadTokens × 命中价 + outputTokens × 输出价) / 1e6`，按每次调用的时间判断北京时间峰谷（工作日 9–12、14–18 为高峰，其余半价；法定节假日无法判断，可能略高估）。单价（元 / 百万 token，高峰）：`deepseek-flash` 命中 0.04 / 未命中 2 / 输出 8；`deepseek-v4-pro` 0.30 / 9 / 27；旧名 `deepseek-v4-flash*` 按 Flash 计。只认 provider 以 `deepseek` 开头的路由。子代理（独立会话）和会话标题生成的用量不计入。
+
+设置：`planList`（显示清单）、`planBubble`（勾项气泡）、`planSummary`（收尾汇总）、`costShow`（`threshold` 默认 / `always` / `off`）、`costThreshold`（默认 ¥0.05，超过才在卡片文字里说；回合摘要里总显示）。
 
 ## 3. 时长升级
 

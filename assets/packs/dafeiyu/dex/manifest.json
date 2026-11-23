@@ -496,6 +496,20 @@
       "lit@2x": "cards/refused.lit@2x.png",
       "locked": "cards/refused.locked.png",
       "locked@2x": "cards/refused.locked@2x.png"
+    },
+    {
+      "id": "allclear",
+      "index": 33,
+      "label": "清单全勾",
+      "trigger": "本轮 Agent 待办（≥2 项）全部勾完并正常结束",
+      "group": "done",
+      "art": "art/allclear.png",
+      "anim": "anim/cheer.webm",
+      "artSourceState": "cheer",
+      "lit": "cards/allclear.lit.png",
+      "lit@2x": "cards/allclear.lit@2x.png",
+      "locked": "cards/allclear.locked.png",
+      "locked@2x": "cards/allclear.locked@2x.png"
     }
   ]
 }

@@ -1,7 +1,7 @@
 # metsh · Task Mascot（dsh-task-mascot）
 
 > **真跟着 Agent 每一步工具调用在动。**
-> DeepSeek Harness（dsh）Web 插件 · by **metsh**
+> DeepSeek Harness（dsh）Web 插件 · by **metsh** · 社区：[LINUX DO](https://linux.do)
 
 ![demo](docs/demo.gif)
 
@@ -9,7 +9,7 @@
 
 ## 安装
 
-> 已验证：**DSH 0.2.2-rc.5**（npm `next`，2026-11-18，Linux · `dsh web`）；此前 **0.2.2-rc.2**（2026-11-12，Linux · `dsh web`）；**DSH Desktop (macOS)** 已在 0.2.2-rc.1 上验证安装与启动加载（插件 2.1.2，2026-11-16）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
+> 已验证：**DSH 0.2.2-rc.5**（npm `next`，Linux · `dsh web`；2.2.0 的待办清单与花费估算于 2026-11-22 实测，此前 2.1.3 于 2026-11-18）；此前 **0.2.2-rc.2**（2026-11-12，Linux · `dsh web`）；**DSH Desktop (macOS)** 已在 0.2.2-rc.1 上验证安装与启动加载（插件 2.1.2，2026-11-16）。要求 dsh ≥ 0.2.0-rc.2、Node ≥ 22.19。
 
 **`dsh web`（命令行）**
 
@@ -37,7 +37,8 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot   # 或 npm 包：
 | 显示内容 | 一个动画 | 动作 + **工具参数**（"正在改 src/app.js"、"运行 npm test"、"正在搜索 \"function\""） |
 | 步骤感 | 无 | **第 N 步**、本步耗时、总耗时、迷你时间线 |
 | 聊天里 | 无 | 对话流里的**内联步骤卡片**，每步 ✓ 成功 / ✗ 失败，本轮结束有总结 + 回放 |
-| 状态粒度 | 2–3 种 | 读文件 / 写代码 / 新建 / 改代码 / 对比 / 搜索 / 上网 / 跑命令（git·测试·装依赖·下载·删除）/ MCP / 做计划 / 派子代理 / 等你确认 / 完成 / 出错 … 共 37 种（v2） |
+| 待办与花费 | 手动加的生活待办 / 余额 | **Agent 自己的待办清单**逐项打勾，结束时汇总没做完和没跑通的；本轮花费估算（本地计算）（2.2.0） |
+| 状态粒度 | 2–3 种 | 读文件 / 写代码 / 新建 / 改代码 / 对比 / 搜索 / 上网 / 跑命令（git·测试·装依赖·下载·删除）/ MCP / 做计划 / 派子代理 / 等你确认 / 完成 / 出错 … 共 38 种（v2） |
 | 看懂循环 | 无 | **第 N 轮**、重试、连续失败会着急、连发工具会手忙脚乱、子任务完成、被拒绝 / 被中断（v2） |
 | 时长 | 无 | 一步超过 20 s 冒汗、60 s 犯困，长任务结束欢呼，阈值可调（v2） |
 | 审批 | 会挡住按钮 | 显示"等你确认"，并**自动避让**审批按钮和输入框 |
@@ -50,7 +51,17 @@ dsh plugin --profile web add github:sherconan/dsh-task-mascot   # 或 npm 包：
 ![search](docs/screenshot-search.png)
 ![approval](docs/screenshot-approval.png)
 
-- **大肥鱼图鉴（2.1.0）**：32 格收集卡，Agent 第一次触发某种动作（写代码、搜索、跑测试、出错……）时点亮一格，右上角弹出一张不挡对话的「新解锁」小提示（短时间内连续解锁会合并成一张，点它打开图鉴）。设置页「打开图鉴」或右键悬浮角色查看；进度只存在本地 localStorage。
+### Agent 待办清单 + 本轮花费（2.2.0）
+
+- **看得见 Agent 自己的待办**：Agent 用 DSH 自带的 `todo_write` 列计划时，步骤卡里出现一张小清单（☐ 未开始 / ▶ 进行中 / ☑ 已完成），开工时大肥鱼说「接到 3 件事：…」，每勾掉一项冒一句「勾掉一项 ✓ …（2/3）」。
+- **收尾汇总**：一轮结束时主动说还剩哪项没做、哪一步没跑通（「这轮先到这：还剩「跑单元测试」没做 · 运行 npm test 失败」）。`todo_write` 没有「失败」状态，失败是从本轮失败的工具调用推断的；同一调用后来重试成功的不算。被中断、输出被截断时也会列出没做完的项。全部勾完会进入「清单全勾」（图鉴第 33 格）。
+- **本轮花了多少钱**：从每次模型调用的 token 用量（未命中缓存输入 / 缓存命中 / 输出）按 DeepSeek 官方单价和北京时间峰谷时段估算，一律写「约」。默认超过 ¥0.05 才在卡片和悬浮角色上说，回合摘要里总会显示。非 DeepSeek 模型或不认识的模型只显示 token 数。单价表日期见设置页（2026-11-22）。
+- 这些都在你的浏览器里从会话事件算出来：**不联网、不读 API key**。设置里可分别关掉清单、勾项气泡、收尾汇总、花费，或把花费改成每轮都报。
+
+![收尾：还剩一项没做 + 失败推断 + 花费](docs/screenshot-plan-wrapup.png)
+![清单全勾](docs/screenshot-plan-allclear.png)
+
+- **大肥鱼图鉴（2.1.0）**：33 格收集卡（2.2.0 新增「清单全勾」），Agent 第一次触发某种动作（写代码、搜索、跑测试、出错……）时点亮一格，右上角弹出一张不挡对话的「新解锁」小提示（短时间内连续解锁会合并成一张，点它打开图鉴）。设置页「打开图鉴」或右键悬浮角色查看；进度只存在本地 localStorage。
 
 ## 工具 → 动画映射 / Tool → state mapping
 
@@ -133,6 +144,7 @@ First match wins (`tool`/`ext` are regexes; `ext` = target file extension). Edit
 - 完全在本地运行：服务端只给浏览器提供素材和本机 SSE 事件流，**不发起任何外部网络请求**、不收集任何数据。
 - 服务端转发只包含工具名和目标文件扩展名；工具参数只在你自己的浏览器里从会话流读取并显示。
 - 设置保存在浏览器 localStorage。
+- 2.2.0 的待办清单和花费估算只读会话里已有的 `todo/write` 和 `assistant/message` 事件，在浏览器里计算，不联网、不读取任何 API key，也不经过服务端转发。
 
 ## 开发
 
@@ -153,6 +165,10 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
   - 大肥鱼图鉴卡片（`assets/packs/dafeiyu/dex/`）为上述大肥鱼动画的衍生素材，同样按 CC BY-NC-SA 4.0 发布、署名链不变。
 - 非官方社区插件，与 DeepSeek（深度求索）、Anthropic 均无隶属关系。
 
+## 社区
+
+- 感谢 [LINUX DO](https://linux.do) 社区：中文 DSH 插件的交流和反馈很多来自这里。欢迎在 LINUX DO 或本仓库 Issues 里提建议、报问题。
+
 ---
 
 ## English
@@ -165,6 +181,7 @@ E2E 脚本在 `test/e2e/`（Playwright），截图输出到 `qa/`（已 gitignor
 - Fine-grained states: read / write / edit / docs / search / run / plan / sub-agent / waiting for approval / done / error.
 - Dodges approval buttons and the input box automatically.
 - Swappable character packs (ships Whale Girl 大肥鱼 and Claude娘) and an editable tool→animation mapping. ~13 MB.
+- **2.2.0:** shows the agent's own `todo_write` checklist and checks items off live; at the end of a turn it lists what is left and which steps failed (inferred from failed tool calls, since todo_write has no failed status). Estimates each turn's cost from per-call token usage at DeepSeek list prices with peak/off-peak hours (always marked as approximate; tokens only for non-DeepSeek models). Computed in your browser, no network, no API key.
 - Runs fully locally; makes no external network calls.
 
 Install (verified on **DSH 0.2.2-rc.5**, Linux, `dsh web`, 2026-11-18; previously **0.2.2-rc.2**; **DSH Desktop (macOS)** install and startup load verified on 0.2.2-rc.1 with plugin 2.1.2, 2026-11-16; requires dsh ≥ 0.2.0-rc.2, Node ≥ 22.19):
@@ -174,3 +191,5 @@ Install (verified on **DSH 0.2.2-rc.5**, Linux, `dsh web`, 2026-11-18; previousl
 - Settings: from 0.2.1 there is no standalone Settings page. Open **More (bottom-left) → Settings → 任务角色 Mascot**. The plugin's card on the Plugins page only has the enable switch and the readme. On 0.2.0 and older, look for the same section in Settings.
 
 Code MIT © metsh. Artwork: 大肥鱼 CC BY-NC-SA 4.0 (「溟月」 by 上善无形 → ZipZipPipe → community 大肥鱼; via TreapGoGo/deepseek-whale-girl), Claude娘 CC BY-SA 4.0 — see ART_LICENSE.md. Unofficial; not affiliated with DeepSeek or Anthropic.
+
+Community: thanks to [LINUX DO](https://linux.do), where much of the Chinese DSH plugin discussion and feedback happens.

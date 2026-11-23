@@ -237,9 +237,9 @@ test('v2: non-zero shell exit counts as failure (retry -> worried), diff exit do
   assert.equal(call('d', 'ls', 'x\n[exit code: 0]').state, 'cmd');
 });
 
-test('dex: 32 public entries map to real states and unlock once', () => {
+test('dex: 33 public entries map to real states and unlock once', () => {
   const m = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/dex/manifest.json', import.meta.url), 'utf8'));
-  assert.equal(m.entries.length, 32); assert.equal(m.private, false);
+  assert.equal(m.entries.length, 33); assert.equal(m.private, false);
   for (const e of m.entries) { assert.ok(I.ALL_STATES.includes(e.id), e.id); for (const k of ['lit', 'lit@2x', 'locked', 'locked@2x']) assert.ok(readFileSync(new URL('../assets/packs/dafeiyu/dex/' + e[k], import.meta.url)).length > 0); }
   I.dex.m = m; I.dexLit().clear();
   assert.equal(I.dexUnlock('coding', { silent: true }), true);
@@ -358,4 +358,124 @@ test('0.2.2-rc.5: CONTENT_REFUSED is a model refusal, not a generic error', () =
   t4.feed(E('turn/end', { reason: { kind: 'completed' } }, 4), true, ck.now());
   assert.equal(t4.view().state, 'done');
   assert.match(t4.view().text, /完成 · 共 1 步/);
+});
+
+// ---------------------------------------------------------------- 2.2.0: agent checklist + turn cost
+const FIX = JSON.parse(readFileSync(new URL('./fixtures/rc5-todo-turn.json', import.meta.url), 'utf8'));
+
+test('2.2.0: real rc.5 todo/write turn -> checklist, check-off bubble, wrap-up of unfinished item', () => {
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  const texts = [];
+  for (const e of FIX.entries) { tr.feed(e, true, ck.now()); const t = tr.S.cur && tr.S.cur.text; if (t && texts[texts.length - 1] !== t) texts.push(t); }
+  assert.ok(texts.includes('接到 3 件事：读 README → 修改 lib/client.js → 跑单元测试'), texts.join(' | '));
+  assert.ok(texts.includes('勾掉 2 项 ✓ 修改 lib/client.js（2/3）'), texts.join(' | '));
+  assert.ok(!texts.some((t) => /完成一项待办/.test(t)), 'tool/result fallback stays quiet once todo/write events are seen');
+  const v = tr.view();
+  assert.equal(v.state, 'done'); assert.equal(v.outcome, 'ok');
+  assert.equal(v.text, '这轮先到这：还剩「跑单元测试」没做');
+  assert.equal(v.plan.items.map((x) => x.status).join(','), 'completed,completed,pending');
+  assert.equal(v.wrap.left.join('|'), '跑单元测试'); assert.equal(v.wrap.done, 2); assert.equal(v.wrap.total, 3); assert.equal(v.wrap.fails.length, 0);
+  // usage: 4 model calls, deepseek-official/deepseek-flash, Beijing Mon 10:31 = peak
+  assert.equal(v.usage.calls, 4); assert.equal(v.usage.total, 2060 * 3 + 2520); assert.equal(v.usage.cacheRead, 800 * 3 + 1000);
+  assert.ok(Math.abs(v.usage.cost - 0.011936) < 1e-9, String(v.usage.cost));
+  assert.equal(I.costPhrase(v.usage), '约 ¥0.01');
+  const rec = tr.S.turns.get(1); assert.equal(rec.wrap.left[0], '跑单元测试'); assert.equal(rec.usage.calls, 4); assert.equal(rec.plan.items.length, 3);
+});
+
+test('2.2.0: history replay rebuilds the same plan/usage without live bubbles', () => {
+  const tr = I.createTracker({ dwellMs: 0 });
+  for (const e of FIX.entries) tr.feed(e, false);
+  const v = tr.view();
+  assert.equal(v.wrap.left.length, 1); assert.equal(v.usage.calls, 4); assert.equal(v.plan.writes, 2);
+});
+
+test('2.2.0: costShow always appends the estimate; threshold hides small turns; off hides it', () => {
+  for (const [mode, re] of [['always', / · 约 ¥0\.01$/], ['threshold', /没做$/], ['off', /没做$/]]) {
+    const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule, costShow: mode });
+    for (const e of FIX.entries) tr.feed(e, true, ck.now());
+    assert.match(tr.view().text, re, mode);
+  }
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule, costThreshold: 0.01 });
+  for (const e of FIX.entries) tr.feed(e, true, ck.now());
+  assert.match(tr.view().text, / · 约 ¥0\.01$/, 'threshold reached');
+});
+
+test('2.2.0: pricing table, peak/idle, non-DeepSeek routes show tokens only', () => {
+  const J = (x) => JSON.parse(JSON.stringify(x));
+  assert.deepEqual(J(I.priceFor('deepseek-official', 'deepseek-flash')), { hit: 0.04, miss: 2, out: 8 });
+  assert.deepEqual(J(I.priceFor('deepseek-account', 'deepseek-v4-pro')), { hit: 0.3, miss: 9, out: 27 });
+  assert.deepEqual(I.priceFor('deepseek-official', 'deepseek-v4-flash-vision-exp'), I.DEEPSEEK_PRICES['deepseek-flash']);
+  assert.equal(I.priceFor('openai', 'deepseek-flash'), null);
+  assert.equal(I.priceFor('deepseek-official', 'some-new-model'), null);
+  const mon1030 = Date.UTC(2026, 10, 23, 2, 30); const mon1230 = Date.UTC(2026, 10, 23, 4, 30); const sat1030 = Date.UTC(2026, 10, 21, 2, 30);
+  assert.equal(I.isPeakCN(mon1030), true); assert.equal(I.isPeakCN(mon1230), false); assert.equal(I.isPeakCN(sat1030), false);
+  const u = { inputTokens: 1e6, cacheReadTokens: 1e6, outputTokens: 1e6 };
+  assert.ok(Math.abs(I.estimateCost(u, 'deepseek-official', 'deepseek-flash', mon1030) - 10.04) < 1e-9);
+  assert.ok(Math.abs(I.estimateCost(u, 'deepseek-official', 'deepseek-flash', sat1030) - 5.02) < 1e-9);
+  const other = I.addUsage(I.newUsage(), { inputTokens: 20000, outputTokens: 1000, totalTokens: 21000 }, 'pi-ai', 'gpt-x', mon1030);
+  assert.equal(I.costPhrase(other), '用了 2.1 万 token');
+  const mixed = I.addUsage(I.addUsage(I.newUsage(), { inputTokens: 10, outputTokens: 1 }, 'deepseek-official', 'deepseek-flash', mon1030), { inputTokens: 10, outputTokens: 1 }, 'pi-ai', 'x', mon1030);
+  assert.match(I.costPhrase(mixed), /token$/, 'any unpriced call -> tokens only, never a partial ¥');
+  assert.equal(I.fmtCost(0.004), '不到 ¥0.01'); assert.equal(I.fmtCost(0.31), '约 ¥0.31'); assert.equal(I.costPhrase(I.newUsage()), '');
+});
+
+test('2.2.0: all items checked -> 清单全勾 (dex #33), plays cheer', () => {
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule }); let q = 0;
+  const live = (t, d) => tr.feed(E(t, d, ++q), true, ck.now());
+  live('turn/start', { turn: 1 });
+  live('todo/write', { todos: [{ content: 'A', status: 'in_progress' }, { content: 'B', status: 'pending' }] });
+  assert.equal(tr.view().state, 'planning');
+  live('todo/write', { todos: [{ content: 'A', status: 'completed' }, { content: 'B', status: 'in_progress' }] });
+  assert.equal(tr.view().text, '勾掉一项 ✓ A（1/2）'); assert.equal(tr.view().state, 'subtask');
+  live('todo/write', { todos: [{ content: 'A', status: 'completed' }, { content: 'B', status: 'completed' }] });
+  live('turn/end', { turn: 1, reason: { kind: 'completed' } });
+  assert.equal(tr.view().state, 'allclear'); assert.equal(tr.view().text, '全部搞定 2/2 ✓'); assert.equal(tr.S.cur.kind, 'done');
+  const pm = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/manifest.json', import.meta.url), 'utf8'));
+  assert.equal(I.resolveState('allclear', pm), 'cheer');
+  assert.equal(I.STATE_ZH.allclear, '清单全勾');
+});
+
+test('2.2.0: failure inference, retries that recovered are not reported; interrupt / max-tokens list what is left', () => {
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule }); let q = 0;
+  const live = (t, d) => tr.feed(E(t, d, ++q), true, ck.now());
+  live('turn/start', { turn: 1 });
+  live('todo/write', { todos: [{ content: '修 bug', status: 'in_progress' }, { content: '跑测试', status: 'pending' }] });
+  live('tool/call', { callId: 'b1', name: 'bash', arguments: JSON.stringify({ command: 'npm run build' }) });
+  live('tool/result', { message: { toolCallId: 'b1', isError: true, content: 'boom' } });
+  live('tool/call', { callId: 'b2', name: 'bash', arguments: JSON.stringify({ command: 'npm run build' }) });
+  live('tool/result', { message: { toolCallId: 'b2', isError: false, content: 'ok\n[exit code: 0]' } });
+  live('tool/call', { callId: 't1', name: 'bash', arguments: JSON.stringify({ command: 'npm test' }) });
+  live('tool/result', { message: { toolCallId: 't1', isError: true, content: 'fail' } });
+  live('tool/call', { callId: 't2', name: 'bash', arguments: JSON.stringify({ command: 'npm test' }) });
+  live('tool/result', { message: { toolCallId: 't2', isError: true, content: 'fail' } });
+  live('todo/write', { todos: [{ content: '修 bug', status: 'completed' }, { content: '跑测试', status: 'in_progress' }] });
+  live('turn/end', { turn: 1, reason: { kind: 'completed' } });
+  const w = tr.view().wrap;
+  assert.equal(w.fails.length, 1); assert.equal(w.fails[0].n, 2); assert.equal(w.fails[0].text, '运行 npm test');
+  assert.equal(tr.view().text, '这轮先到这：还剩「跑测试」没做 · 运行 npm test 失败 2 次');
+  // interrupted
+  const t2 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  t2.feed(E('turn/start', { turn: 1 }, 1), true, ck.now());
+  t2.feed(E('todo/write', { todos: [{ content: '改 client.js', status: 'in_progress' }, { content: '跑测试', status: 'pending' }] }, 2), true, ck.now());
+  t2.feed(E('turn/end', { turn: 1, reason: { kind: 'aborted', reason: 'user' } }, 3), true, ck.now());
+  assert.equal(t2.view().state, 'interrupted'); assert.equal(t2.view().text, '已中断 · 还剩 2 项没做：改 client.js、跑测试');
+  // max-tokens
+  const t3 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  t3.feed(E('turn/start', { turn: 1 }, 1), true, ck.now());
+  t3.feed(E('turn/end', { turn: 1, reason: { kind: 'max-tokens' } }, 2), true, ck.now());
+  assert.equal(t3.view().text, '输出到上限被截断');
+  // planSummary off -> old wording
+  const t4 = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule, planSummary: false });
+  for (const e of FIX.entries) t4.feed(e, true, ck.now());
+  assert.match(t4.view().text, /^完成 · 共 3 步 · 3 轮$/);
+});
+
+test('2.2.0: todo/write is normalized and no checklist without todo_write', () => {
+  assert.deepEqual(JSON.parse(JSON.stringify(I.normTodos([{ content: ' a ', status: 'done' }, { content: '', status: 'pending' }, null, { content: 'b', status: 'in-progress' }, { content: 'c' }]))),
+    [{ content: 'a', status: 'completed' }, { content: 'b', status: 'in_progress' }, { content: 'c', status: 'pending' }]);
+  assert.equal(I.normTodos('x'), null);
+  const tr = I.createTracker({ dwellMs: 0 });
+  tr.feed(E('turn/start', { turn: 1 }, 1), true); tr.feed(E('turn/end', { turn: 1, reason: { kind: 'completed' } }, 2), true);
+  assert.equal(tr.view().plan, null); assert.equal(tr.view().wrap.total, 0); assert.equal(tr.view().text, '完成 · 共 0 步');
+  assert.equal(I.DEFAULT_SETTINGS.planList, true); assert.equal(I.DEFAULT_SETTINGS.costShow, 'threshold'); assert.equal(I.DEFAULT_SETTINGS.costThreshold, 0.05);
 });

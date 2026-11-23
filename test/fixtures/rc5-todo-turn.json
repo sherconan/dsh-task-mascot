@@ -1,0 +1,412 @@
+{
+ "source": "DSH 0.2.2-rc.5 dsh web, isolated home, keyless mock DeepSeek Messages (deepseek-official/deepseek-flash), captured 2026-11-22 21:31 America/New_York via DSH_TASK_MASCOT_DEBUG_LOG; assistant streams dropped, read output trimmed, local path anonymized",
+ "entries": [
+  {
+   "type": "event",
+   "event": {
+    "type": "turn/start",
+    "seq": 1,
+    "time": 1795401097645,
+    "data": {
+     "turn": 1
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/start",
+    "seq": 2,
+    "time": 1795401097749,
+    "data": {
+     "turn": 1,
+     "step": 1
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "assistant/message",
+    "seq": 3,
+    "time": 1795401097836,
+    "data": {
+     "turn": 1,
+     "step": 1,
+     "message": {
+      "role": "assistant",
+      "source": {
+       "kind": "model",
+       "provider": "deepseek-official",
+       "model": "deepseek-flash"
+      }
+     },
+     "usage": {
+      "inputTokens": 1200,
+      "outputTokens": 60,
+      "cacheReadTokens": 800,
+      "totalTokens": 2060
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 4,
+    "time": 1795401097838,
+    "data": {
+     "turn": 1,
+     "step": 1,
+     "callId": "call_todo1",
+     "name": "todo_write",
+     "arguments": "{\"todos\":[{\"content\":\"读 README\",\"status\":\"in_progress\"},{\"content\":\"修改 lib/client.js\",\"status\":\"pending\"},{\"content\":\"跑单元测试\",\"status\":\"pending\"}]}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "todo/write",
+    "seq": 5,
+    "time": 1795401097861,
+    "data": {
+     "todos": [
+      {
+       "content": "读 README",
+       "status": "in_progress"
+      },
+      {
+       "content": "修改 lib/client.js",
+       "status": "pending"
+      },
+      {
+       "content": "跑单元测试",
+       "status": "pending"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 6,
+    "time": 1795401097865,
+    "data": {
+     "turn": 1,
+     "step": 1,
+     "message": {
+      "role": "tool",
+      "toolCallId": "call_todo1",
+      "isError": false,
+      "content": [
+       {
+        "type": "text",
+        "text": "Updated todo list: 2 pending, 1 in progress, 0 completed."
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/end",
+    "seq": 7,
+    "time": 1795401097866,
+    "data": {
+     "turn": 1,
+     "step": 1
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/start",
+    "seq": 8,
+    "time": 1795401097883,
+    "data": {
+     "turn": 1,
+     "step": 2
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "assistant/message",
+    "seq": 9,
+    "time": 1795401097895,
+    "data": {
+     "turn": 1,
+     "step": 2,
+     "message": {
+      "role": "assistant",
+      "source": {
+       "kind": "model",
+       "provider": "deepseek-official",
+       "model": "deepseek-flash"
+      }
+     },
+     "usage": {
+      "inputTokens": 1200,
+      "outputTokens": 60,
+      "cacheReadTokens": 800,
+      "totalTokens": 2060
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 10,
+    "time": 1795401097896,
+    "data": {
+     "turn": 1,
+     "step": 2,
+     "callId": "call_read1",
+     "name": "read",
+     "arguments": "{\"file_path\":\"README.md\"}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 11,
+    "time": 1795401097925,
+    "data": {
+     "turn": 1,
+     "step": 2,
+     "meta": {
+      "path": "/workspace/rc5-mascot-qa/README.md",
+      "offset": 1,
+      "lines": [
+       {
+        "number": 1,
+        "text": "# rc5-mascot-qa"
+       },
+       {
+        "number": 2,
+        "text": ""
+       },
+       {
+        "number": 3,
+        "text": "A tiny workspace for dsh-task-mascot 2.1.3 smoke on DSH 0.2.2-rc.5."
+       }
+      ],
+      "totalLines": 3,
+      "lang": "md"
+     },
+     "message": {
+      "role": "tool",
+      "toolCallId": "call_read1",
+      "isError": false,
+      "content": [
+       {
+        "type": "text",
+        "text": "<content>\n1: # rc5-mascot-qa\n</content>"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/end",
+    "seq": 12,
+    "time": 1795401097926,
+    "data": {
+     "turn": 1,
+     "step": 2
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/start",
+    "seq": 13,
+    "time": 1795401097937,
+    "data": {
+     "turn": 1,
+     "step": 3
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "assistant/message",
+    "seq": 14,
+    "time": 1795401097948,
+    "data": {
+     "turn": 1,
+     "step": 3,
+     "message": {
+      "role": "assistant",
+      "source": {
+       "kind": "model",
+       "provider": "deepseek-official",
+       "model": "deepseek-flash"
+      }
+     },
+     "usage": {
+      "inputTokens": 1200,
+      "outputTokens": 60,
+      "cacheReadTokens": 800,
+      "totalTokens": 2060
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 15,
+    "time": 1795401097948,
+    "data": {
+     "turn": 1,
+     "step": 3,
+     "callId": "call_todo2",
+     "name": "todo_write",
+     "arguments": "{\"todos\":[{\"content\":\"读 README\",\"status\":\"completed\"},{\"content\":\"修改 lib/client.js\",\"status\":\"completed\"},{\"content\":\"跑单元测试\",\"status\":\"pending\"}]}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "todo/write",
+    "seq": 16,
+    "time": 1795401097952,
+    "data": {
+     "todos": [
+      {
+       "content": "读 README",
+       "status": "completed"
+      },
+      {
+       "content": "修改 lib/client.js",
+       "status": "completed"
+      },
+      {
+       "content": "跑单元测试",
+       "status": "pending"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 17,
+    "time": 1795401097953,
+    "data": {
+     "turn": 1,
+     "step": 3,
+     "message": {
+      "role": "tool",
+      "toolCallId": "call_todo2",
+      "isError": false,
+      "content": [
+       {
+        "type": "text",
+        "text": "Updated todo list: 1 pending, 0 in progress, 2 completed."
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/end",
+    "seq": 18,
+    "time": 1795401097953,
+    "data": {
+     "turn": 1,
+     "step": 3
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/start",
+    "seq": 19,
+    "time": 1795401097963,
+    "data": {
+     "turn": 1,
+     "step": 4
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "assistant/message",
+    "seq": 20,
+    "time": 1795401097972,
+    "data": {
+     "turn": 1,
+     "step": 4,
+     "message": {
+      "role": "assistant",
+      "source": {
+       "kind": "model",
+       "provider": "deepseek-official",
+       "model": "deepseek-flash"
+      }
+     },
+     "usage": {
+      "inputTokens": 1500,
+      "outputTokens": 20,
+      "cacheReadTokens": 1000,
+      "totalTokens": 2520
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "step/end",
+    "seq": 21,
+    "time": 1795401097973,
+    "data": {
+     "turn": 1,
+     "step": 4
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "turn/end",
+    "seq": 22,
+    "time": 1795401097973,
+    "data": {
+     "turn": 1,
+     "reason": {
+      "kind": "completed"
+     }
+    }
+   }
+  }
+ ]
+}
