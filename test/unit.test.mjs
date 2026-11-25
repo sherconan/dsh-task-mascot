@@ -140,7 +140,7 @@ test('v2 bash sub-classification and write->create', () => {
 });
 
 test('every real DSH tool maps to a state every pack can play', () => {
-  const tools = ['bash', 'pwsh', 'read', 'read_image', 'write', 'edit', 'str_replace_editor', 'apply_patch', 'glob', 'grep', 'web_fetch', 'web_search', 'subagent', 'subagent_fork', 'subagent_oar', 'spawn_teammate', 'wait_agent', 'send_message', 'team_task_create', 'todo_write', 'create_goal', 'update_goal', 'ralph', 'schedule_create', 'job_output', 'terminal_send', 'user_terminal_list', 'user_terminal_read', 'session_search', 'list_mcp_resources', 'list_mcp_resource_templates', 'read_mcp_resource', 'mcp__x__y', 'skill', 'plugin_manager', 'plugin_market', 'working_directory', 'create_worktree', 'load_workspace_dependencies', 'present', 'ask_user_question', 'propose_action', 'exit_plan_mode', 'lsp', 'stagehand_act', 'cordis_inspect_tree', 'run_code', 'office_convert', 'office_recalculate', 'office_render'];
+  const tools = ['bash', 'pwsh', 'read', 'read_image', 'write', 'edit', 'str_replace_editor', 'apply_patch', 'glob', 'grep', 'web_fetch', 'web_search', 'subagent', 'subagent_fork', 'subagent_oar', 'spawn_teammate', 'wait_agent', 'send_message', 'session_send_message', 'team_task_create', 'todo_write', 'create_goal', 'update_goal', 'ralph', 'schedule_create', 'job_output', 'terminal_send', 'user_terminal_list', 'user_terminal_read', 'session_search', 'session_event_read', 'session_event_search', 'session_event_trace', 'session_trace', 'list_session', 'list_workspace', 'list_mcp_resources', 'list_mcp_resource_templates', 'read_mcp_resource', 'mcp__x__y', 'skill', 'plugin_manager', 'plugin_market', 'working_directory', 'create_worktree', 'enter_worktree', 'exit_worktree', 'load_workspace_dependencies', 'present', 'ask_user_question', 'propose_action', 'exit_plan_mode', 'lsp', 'stagehand_act', 'cordis_inspect', 'cordis_inspect_tree', 'run_code', 'office_convert', 'office_recalculate', 'office_render'];
   const r = I.compileRules(I.DEFAULT_RULES);
   for (const pack of ['dafeiyu', 'claude']) {
     const m = JSON.parse(readFileSync(new URL('../assets/packs/' + pack + '/manifest.json', import.meta.url), 'utf8'));
@@ -297,6 +297,76 @@ test('0.2.2-rc.2: each new tool name maps to a specific state (not generic tools
   assert.equal(I.actionText('office_convert', { path: 'a.docx' }), '正在转换文档 a.docx');
   assert.equal(I.actionText('office_recalculate', { path: 'b.xlsx' }), '正在重算表格 b.xlsx');
   assert.equal(I.actionText('office_render', { path: 'c.pptx' }), '正在渲染文档 c.pptx');
+});
+
+test('0.2.3-alpha.2: new tool names map to specific states (not generic tools)', () => {
+  const r = I.compileRules(I.DEFAULT_RULES);
+  const cases = {
+    cordis_inspect: 'reading',
+    cordis_inspect_tree: 'reading',
+    cordis_inspect_list: 'reading',
+    enter_worktree: 'git',
+    exit_worktree: 'git',
+    create_worktree: 'git',
+    session_send_message: 'subagents',
+    list_session: 'memory',
+    list_workspace: 'memory',
+    session_search: 'memory',
+    session_read: 'memory',
+    session_list: 'memory',
+    working_directory: 'tools',
+    propose_action: 'waiting',
+  };
+  for (const [t, st] of Object.entries(cases)) assert.equal(I.stateForTool(t, undefined, r), st, t);
+  assert.notEqual(I.stateForTool('session_send_message', undefined, r), 'memory', 'must not reuse session_* memory rule');
+  assert.equal(I.stateForTool('session_event_read', undefined, r), 'memory');
+  assert.equal(I.stateForTool('session_event_search', undefined, r), 'memory');
+  assert.equal(I.stateForTool('session_trace', undefined, r), 'memory');
+  assert.equal(I.actionText('cordis_inspect', {}), '正在查看插件');
+  assert.equal(I.actionText('cordis_inspect', { query: { platform: 'host', provider: 'dsh', method: 'tools' } }), '正在查看插件 host · dsh · tools');
+  assert.equal(I.actionText('cordis_inspect_tree', { name: 'dsh-task-mascot' }), '正在查看插件 dsh-task-mascot');
+  assert.equal(I.actionText('enter_worktree', { name: 'fix-login-retry' }), '进入 worktree fix-login-retry');
+  assert.equal(I.actionText('exit_worktree', {}), '离开 worktree');
+  assert.equal(I.actionText('create_worktree', { path: 'wt/old' }), '新建 Git worktree wt/old');
+  assert.equal(I.actionText('session_send_message', { session_id: 's-1', message: '请继续' }), '给其他会话发消息 s-1');
+  assert.equal(I.actionText('session_send_message', {}), '给其他会话发消息');
+  assert.equal(I.actionText('list_session', { workspace_id: 'ws-1' }), '翻看会话列表 ws-1');
+  assert.equal(I.actionText('list_workspace', {}), '翻看工作区列表');
+  assert.equal(I.actionText('session_search', { query: 'old' }), '翻看历史会话 "old"');
+});
+
+test('0.2.3-alpha.2: fixture replay maps new tools and keeps rc.5 names', () => {
+  const FIX_A = JSON.parse(readFileSync(new URL('./fixtures/alpha2-tool-calls.json', import.meta.url), 'utf8'));
+  const ck = fakeClock(); const tr = I.createTracker({ dwellMs: 0, now: ck.now, schedule: ck.schedule });
+  const seen = [];
+  for (const e of FIX_A.entries) {
+    tr.feed(e, true, ck.now());
+    const typ = e.event && e.event.type;
+    if (typ === 'tool/call') {
+      const st = tr.view().steps.at(-1);
+      seen.push({ tool: e.event.data.name, state: st.state, text: st.text });
+    }
+  }
+  assert.deepEqual(seen, [
+    { tool: 'cordis_inspect', state: 'reading', text: '正在查看插件' },
+    { tool: 'enter_worktree', state: 'git', text: '进入 worktree fix-login-retry' },
+    { tool: 'exit_worktree', state: 'git', text: '离开 worktree' },
+    { tool: 'session_send_message', state: 'subagents', text: '给其他会话发消息 s-42' },
+    { tool: 'list_session', state: 'memory', text: '翻看会话列表' },
+    { tool: 'list_workspace', state: 'memory', text: '翻看工作区列表' },
+    { tool: 'cordis_inspect_tree', state: 'reading', text: '正在查看插件' },
+    { tool: 'create_worktree', state: 'git', text: '新建 Git worktree wt/legacy' },
+    { tool: 'session_search', state: 'memory', text: '翻看历史会话 "login bug"' },
+  ]);
+  const dex = JSON.parse(readFileSync(new URL('../assets/packs/dafeiyu/dex/manifest.json', import.meta.url), 'utf8'));
+  assert.equal(dex.entries.length, 33);
+  const byId = Object.fromEntries(dex.entries.map((e) => [e.id, e]));
+  assert.match(byId.reading.trigger, /cordis_inspect/);
+  assert.match(byId.git.trigger, /enter_worktree/);
+  assert.match(byId.git.trigger, /exit_worktree/);
+  assert.match(byId.memory.trigger, /list_session/);
+  assert.doesNotMatch(byId.memory.trigger, /session_\*/);
+  assert.match(byId.subagents.trigger, /session_send_message/);
 });
 
 test('0.2.2-rc.2: apply_patch path from patch body and sandbox deny is a failure', () => {

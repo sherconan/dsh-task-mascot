@@ -77,13 +77,13 @@ First match wins (`tool`/`ext` are regexes; `ext` = target file extension). Edit
 | `write` / `edit` / `str_replace_editor` / `apply_patch` 且目标是 md/txt/rst/doc/tex | `writingdoc` 写文档 | editing（回退）|
 | `write` | `coding` 写代码 | coding |
 | `edit`, `str_replace_editor`, `apply_patch` | `editing` 改代码 | editing |
-| `read`, `read_image`, `read_mcp_resource`, `lsp`, `user_terminal_list`, `user_terminal_read` | `reading` 读文件 | reading |
-| `glob`, `grep`, `session_*`, `web_search`, `web_fetch`, `stagehand_*` | `search` 搜索 | search |
+| `read`, `read_image`, `read_mcp_resource`, `lsp`, `cordis_inspect`, `user_terminal_list`, `user_terminal_read` | `reading` 读文件 | reading |
+| `glob`, `grep`, `web_search`, `web_fetch`, `stagehand_*` | `search` 搜索 | search |
 | `bash`, `pwsh`, `terminal_*`, `job_*` | `cmd` 跑命令 | cmd |
 | `run_code`, `workflow`, `office_recalculate` | `data` 跑数据 | reading（回退）|
 | `office_convert`, `office_render` | `writingdoc` 写文档 | editing（回退）|
 | `todo_write`, `exit_plan_mode`, `*_goal`, `schedule_*` | `planning` 做计划 | planning |
-| `subagent`, `subagent_fork`, `subagent_oar`, `send_message`, `list_agents`, `interrupt_agent`, `spawn_teammate`, `wait_agent`, `team_task_*`, `ralph` | `subagents` 派子代理 | subagents |
+| `subagent`, `subagent_fork`, `subagent_oar`, `send_message`, `session_send_message`, `list_agents`, `interrupt_agent`, `spawn_teammate`, `wait_agent`, `team_task_*`, `ralph` | `subagents` 派子代理 | subagents |
 | `ask_user_question`, `propose_action` | `waiting` 等你确认 | waiting |
 | `list_mcp_resources`, `list_mcp_resource_templates`, `mcp__*` | `mcp` 调用 MCP | tools（回退）|
 | `present` | `summary` 总结 | thinking（回退）|

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- 补上 DSH 0.2.3-alpha.2 里一批新工具名的映射（沿用已有动画，不加新画）：`cordis_inspect` 走读文件（仍兼容旧的 `cordis_inspect_*`），`enter_worktree` / `exit_worktree` 走 git（保留 `create_worktree`，方便回放 rc.5 会话），`session_send_message` 走派子代理（不再误判成「翻看历史会话」），`list_session` / `list_workspace` 走翻记录。
+- 已下线的 `working_directory` / `propose_action` 映射保留，以免旧会话回放掉到「用工具」。
+- 图鉴仍是 33 格，无新条目；只更新了读文件 / 翻记录 / git / 派子代理几格的触发说明，与新映射一致。
+
+
 ## 2.2.0
 
 - 新增 Agent 待办清单：读 DSH 官方 `todo_write` 产生的 `todo/write` 事件，步骤卡里显示小清单（☐ / ▶ / ☑），开工时说「接到 N 件事：…」，每勾掉一项冒一句「勾掉一项 ✓ …（x/y）」，悬浮角色同步显示。

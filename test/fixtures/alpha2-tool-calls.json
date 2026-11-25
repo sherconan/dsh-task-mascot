@@ -1,0 +1,300 @@
+{
+ "source": "Constructed from the DSH 0.2.3-alpha.2 tool catalog (npm dist-tag alpha, published package @deepseek-ai/dsh@0.2.3-alpha.2). Not a live capture. Event shapes follow DSH 0.2.2-rc.5 session events so the tracker can replay them. Arguments use the official alpha.2 schemas (enter_worktree.name, session_send_message.session_id). Includes rc.5 names (cordis_inspect_tree, create_worktree, session_search) to confirm backward compatibility.",
+ "entries": [
+  {
+   "type": "event",
+   "event": {
+    "type": "turn/start",
+    "seq": 1,
+    "time": 0,
+    "data": {
+     "turn": 1
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 2,
+    "time": 1,
+    "data": {
+     "turn": 1,
+     "step": 1,
+     "callId": "c1",
+     "name": "cordis_inspect",
+     "arguments": "{}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 3,
+    "time": 2,
+    "data": {
+     "message": {
+      "toolCallId": "c1",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 4,
+    "time": 3,
+    "data": {
+     "turn": 1,
+     "step": 2,
+     "callId": "c2",
+     "name": "enter_worktree",
+     "arguments": "{\"name\":\"fix-login-retry\"}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 5,
+    "time": 4,
+    "data": {
+     "message": {
+      "toolCallId": "c2",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 6,
+    "time": 5,
+    "data": {
+     "turn": 1,
+     "step": 3,
+     "callId": "c3",
+     "name": "exit_worktree",
+     "arguments": "{}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 7,
+    "time": 6,
+    "data": {
+     "message": {
+      "toolCallId": "c3",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 8,
+    "time": 7,
+    "data": {
+     "turn": 1,
+     "step": 4,
+     "callId": "c4",
+     "name": "session_send_message",
+     "arguments": "{\"session_id\":\"s-42\",\"message\":\"请继续\"}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 9,
+    "time": 8,
+    "data": {
+     "message": {
+      "toolCallId": "c4",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 10,
+    "time": 9,
+    "data": {
+     "turn": 1,
+     "step": 5,
+     "callId": "c5",
+     "name": "list_session",
+     "arguments": "{}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 11,
+    "time": 10,
+    "data": {
+     "message": {
+      "toolCallId": "c5",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 12,
+    "time": 11,
+    "data": {
+     "turn": 1,
+     "step": 6,
+     "callId": "c6",
+     "name": "list_workspace",
+     "arguments": "{}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 13,
+    "time": 12,
+    "data": {
+     "message": {
+      "toolCallId": "c6",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 14,
+    "time": 13,
+    "data": {
+     "turn": 1,
+     "step": 7,
+     "callId": "c7",
+     "name": "cordis_inspect_tree",
+     "arguments": "{}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 15,
+    "time": 14,
+    "data": {
+     "message": {
+      "toolCallId": "c7",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 16,
+    "time": 15,
+    "data": {
+     "turn": 1,
+     "step": 8,
+     "callId": "c8",
+     "name": "create_worktree",
+     "arguments": "{\"path\":\"wt/legacy\"}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 17,
+    "time": 16,
+    "data": {
+     "message": {
+      "toolCallId": "c8",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/call",
+    "seq": 18,
+    "time": 17,
+    "data": {
+     "turn": 1,
+     "step": 9,
+     "callId": "c9",
+     "name": "session_search",
+     "arguments": "{\"query\":\"login bug\"}"
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "tool/result",
+    "seq": 19,
+    "time": 18,
+    "data": {
+     "message": {
+      "toolCallId": "c9",
+      "isError": false,
+      "content": "ok"
+     }
+    }
+   }
+  },
+  {
+   "type": "event",
+   "event": {
+    "type": "turn/end",
+    "seq": 20,
+    "time": 19,
+    "data": {
+     "turn": 1,
+     "reason": {
+      "kind": "completed"
+     }
+    }
+   }
+  }
+ ]
+}

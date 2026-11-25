@@ -7,24 +7,24 @@ v2 让大肥鱼不只"跟着每一步工具调用动"，还能看懂**整个 age
 | 状态 | 中文 | 触发 | 大肥鱼动画 | 没有该动画的角色包（如 Claude娘）回退到 |
 |---|---|---|---|---|
 | `thinking` / `thinking_b` | 思考 | 模型在输出 | 托腮 / 灯泡 | — |
-| `reading` / `reading_b` | 读文件 | `read` `lsp` `cordis_inspect_*` | 看纸 / 捧书 | — |
+| `reading` / `reading_b` | 读文件 | `read` `lsp` `cordis_inspect` `cordis_inspect_*` | 看纸 / 捧书 | — |
 | `search` / `search_b` | 搜索 | `glob` `grep` | 放大镜 / 望远 | — |
 | `coding` / `coding_b` | 写代码 | `write`（已有文件） | 笔记本 / 敲键盘 | — |
 | `create` | 新建文件 | `write` 且路径在本会话里第一次出现 | 举着新纸 | coding |
 | `editing` / `editing_b` | 改代码 | `edit` `str_replace_editor` | 改纸 / 大铅笔 | — |
 | `diff` | 对比 | `git diff` `diff` `cmp` | 两张纸对照 | editing → reading |
 | `cmd` / `cmd_b` | 跑命令 | `bash` `pwsh` `terminal_*` `job_*`（其它命令） | 终端窗 | — |
-| `git` | git | `git …` `gh …`、`create_worktree` | 印章 | cmd |
+| `git` | git | `git …` `gh …`、`create_worktree` `enter_worktree` `exit_worktree` | 印章 | cmd |
 | `test` | 跑测试 | `npm/pnpm/yarn/bun test` `pytest` `jest` `vitest` `go test` `cargo test` `node --test` `make test` `mvn test` | 试管 | cmd |
 | `install` | 装依赖 | `npm i/ci/add` `pip install` `uv` `apt` `brew` `cargo add` `go get` `gem` `Install-Module`、`load_workspace_dependencies` | 抱纸箱 | download → cmd |
 | `download` | 下载 | `curl` `wget` `aria2c` `iwr` `scp` `rsync` | 下载盒 | web → cmd |
 | `delete` | 删除 | `rm` `rmdir` `unlink` `del` `Remove-Item` `shred` | 垃圾桶 | cmd |
 | `web` | 上网 | `web_search` `web_fetch` `stagehand_*` | 浏览器窗 | search |
 | `mcp` | MCP 工具 | `mcp__*` `list_mcp_resources` `read_mcp_resource` | 插头 | tools → cmd |
-| `memory` | 翻记录 | `session_*` | 记事本 | search → reading |
+| `memory` | 翻记录 | `session_search` `session_read` `session_list` `list_session` `list_workspace`（不含给其他会话发消息的 `session_send_message`） | 记事本 | search → reading |
 | `media` | 看图 | `read_image` | 相机 | reading |
 | `planning` | 做计划 | `todo_write` `*_goal` `schedule_*` | 清单 | — |
-| `subagents` | 派子代理 | `subagent` `spawn_teammate` … | 召唤 | — |
+| `subagents` | 派子代理 | `subagent` `spawn_teammate` `session_send_message` … | 召唤 | — |
 | `subtask` | 子任务完成 | 子代理 / 队友任务成功返回；`todo_write` 完成数增加 | 比耶 + ✓ | done |
 | `busy` | 忙碌 | 模型不停顿地连发 ≥ 5 个工具调用（`busyN`） | 手忙脚乱 | cmd → thinking |
 | `retry` | 重试 | 与上一次失败**相同**的调用再次发出；或 `llm/retry` | 握拳再来 | error → thinking |
